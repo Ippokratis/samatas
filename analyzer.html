@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Samatas Analyzer - spectrum analyser plugin for macOS and Windows</title>
+<meta name="description" content="Samatas Analyzer is a spectrum analyser plugin for macOS (Audio Unit and VST3) and Windows (VST3), with a waterfall view, a note readout, peak hold, channel modes and a reference track.">
+<meta property="og:title" content="Samatas Analyzer">
+<meta property="og:description" content="A spectrum analyser plugin with a waterfall view, a note readout and a reference track. For macOS and Windows.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+
+<header class="top">
+    <a class="brand" href="./">Samatas</a>
+    <nav aria-label="On this page">
+        <a href="#features">Features</a>
+        <a href="#requirements">Requirements</a>
+        <a href="#install">Install</a>
+    </nav>
+</header>
+
+<main>
+    <section>
+        <h1>Samatas Analyzer</h1>
+        <p>See what your track is doing, and how it sits next to another one. A spectrum analyser plugin with a waterfall view, a note readout under the pointer, and a reference track drawn over your own. For macOS and Windows.</p>
+        <div class="shot" role="img" aria-label="Placeholder for a screenshot of the spectrum view">Screenshot: the spectrum view</div>
+    </section>
+
+    <section id="features">
+        <h2>What it does</h2>
+        <ul>
+            <li><strong>Spectrum.</strong> The level of every frequency in your track, low on the left and high on the right. Choose the frequency axis: Log Sub starts at 10 Hz so rumble and sub-bass are on screen, Log starts at 20 Hz, and Linear spaces the frequencies evenly, which is useful for counting the harmonics of one note.</li>
+            <li><strong>Readout under the pointer.</strong> Move the pointer over the plot to read the frequency, the nearest note, and how many cents away from it you are.</li>
+            <li><strong>Hold.</strong> Draws only the loudest level each frequency has reached since you switched it on. The line never sinks until you switch it off. The quickest way to find a resonance: play the part and look for the bump that stays.</li>
+            <li><strong>Channels.</strong> Mono, L / R, Mid / Side or L+R Power. L / R draws the left channel in blue and the right in green. Mid / Side draws the centre of the mix in blue and the stereo width in green. L / R and Mid / Side need a stereo track.</li>
+            <li><strong>Detect.</strong> RMS shows the tone of a mix. Peak jumps up at once to every hit, which shows the loudest moments, like drum hits.</li>
+            <li><strong>Response.</strong> How fast the curve moves: Fast 250 ms, Normal 1000 ms or Slow 3000 ms.</li>
+            <li><strong>Tilt.</strong> Tilts the picture so a normal mix reads as roughly flat: 0, 3 or 4.5 dB per octave.</li>
+            <li><strong>Zoom.</strong> Drag the level numbers sideways to zoom into the levels, and up or down to slide the range. Hold Option (Alt) and drag a box across the plot to zoom into it. R in the corner zooms back out. Your view is saved with the session.</li>
+            <li><strong>Help built in.</strong> Switch INFO on and every control explains itself when you hover over it.</li>
+            <li><strong>Resizable window.</strong> Drag the corner to make it as large as you need.</li>
+            <li><strong>Sound untouched.</strong> Nothing in this plugin changes the audio. It only looks.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Reference track</h2>
+        <p>Send another track to the plugin's side-chain input and it is drawn in <span class="amber">orange</span> over your own. See both at once and find where the two are fighting for the same frequencies. The reference curve has its own hold, which stays through silence.</p>
+        <div class="shot" role="img" aria-label="Placeholder for a screenshot of the reference curve over the track">Screenshot: a reference track over your own</div>
+    </section>
+
+    <section>
+        <h2>Waterfall</h2>
+        <p>Replaces the curve with the last two seconds of it, stacked into the distance, newest at the front. It shows how a sound moves over time: the decay of a reverb tail, a filter sweep, a resonance that builds.</p>
+        <p>Drag left or right to turn it, and up or down to tilt it. Scroll to zoom, and hold Shift and drag to slide the picture. FREEZE holds it still so you can study it and pick out one frame. ENLARGE lets it fill the whole plot.</p>
+        <div class="shot" role="img" aria-label="Placeholder for a screenshot of the waterfall view">Screenshot: the waterfall</div>
+    </section>
+
+    <section id="requirements">
+        <h2>Requirements</h2>
+        <ul>
+            <li><strong>macOS.</strong> A Mac with Apple silicon (M1 or later) and macOS 26 or later. Audio Unit and VST3.</li>
+            <li><strong>Windows.</strong> 64-bit Windows 10 or 11. VST3.</li>
+            <li>A host that loads Audio Unit or VST3 plugins, such as Logic Pro or Ableton Live.</li>
+        </ul>
+    </section>
+
+    <section id="install">
+        <h2>Install on macOS</h2>
+        <p>Close your DAW first. Samatas Analyzer is not signed with an Apple Developer ID, so macOS stops the installer the first time you open it. This is expected, and you only do it once.</p>
+        <ol>
+            <li>Open the disk image and double-click "Install Samatas Analyzer.pkg".</li>
+            <li>macOS says it could not verify the installer. Click Done.</li>
+            <li>Open System Settings, then Privacy &amp; Security.</li>
+            <li>Scroll down to Security. Next to the message about "Install Samatas Analyzer.pkg", click Open Anyway.</li>
+            <li>Enter your password, then click Open Anyway again. The installer starts.</li>
+            <li>Open your DAW. Samatas Analyzer is listed under Samatas.</li>
+        </ol>
+        <p>The Audio Unit and the VST3 are installed for all users of the Mac:</p>
+<pre>/Library/Audio/Plug-Ins/Components/SamatasAnalyzer.component
+/Library/Audio/Plug-Ins/VST3/SamatasAnalyzer.vst3</pre>
+    </section>
+
+    <section>
+        <h2>Install on Windows</h2>
+        <ol>
+            <li>Close your DAW, then run the setup program.</li>
+            <li>Open your DAW. Samatas Analyzer is listed under Samatas.</li>
+        </ol>
+        <p>The VST3 is installed here:</p>
+<pre>C:\Program Files\Common Files\VST3\SamatasAnalyzer.vst3</pre>
+        <p>To uninstall: Settings, Apps, Installed apps, Samatas Analyzer, Uninstall.</p>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2026 Samatas. Audio Units and Logic Pro are trademarks of Apple Inc. VST is a registered trademark of Steinberg Media Technologies GmbH. Ableton Live is a trademark of Ableton AG. Windows is a trademark of Microsoft Corporation.</p>
+</footer>
+
+</div>
+</body>
+</html>
