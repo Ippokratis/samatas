@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Samatas Analyzer User Manual</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="The user manual of Samatas Analyzer, a spectrum analyser plugin for macOS and Windows: every control, every reading, and step-by-step tasks.">
+  <meta property="og:title" content="Samatas Analyzer User Manual">
+  <meta property="og:type" content="article">
+</head>
+<body>
+<div class="page">
+<header class="top">
+    <a class="brand" href="./">Samatas</a>
+    <nav aria-label="Pages">
+        <a href="samatas_analyzer.html">Analyzer</a>
+        <a href="samatas_analyzer_manual.html">Manual</a>
+        <a href="samatas_analyzer_image-to-sound.html">Image to Sound</a>
+    </nav>
+</header>
+<main class="manual">
+<h1 id="samatas-analyzer-user-manual">Samatas Analyzer User Manual</h1>
+<h2 id="1-introduction">1. Introduction</h2>
+<p><strong>Picture 1: Samatas Analyzer on a full mix.</strong> <img loading="lazy" decoding="async" src="manual_1p0/1FullMix-4248387.avif" alt="1fullmix" /></p>
+<p>Samatas Analyzer is a real-time spectrum analyzer plugin. It shows how loud each frequency is over time. It can help you find frequencies that are too loud or too quiet, compare your track with a reference, and waste half your day just staring at the curves. Consider yourself warned.</p>
+<h3 id="about-this-manual">About this manual</h3>
+<p>This manual explains every control of Samatas Analyzer and what each reading means. It is written for people who mix, master or design sound in a DAW, such as Logic Pro, Ableton Live or Reaper. This manual calls your DAW your <strong>host</strong> and assumes that you know how to insert a plugin on a track and how to play a session in your host.</p>
+<p>Quick key guide:</p>
+<ul>
+<li><strong>Command</strong> means the Command key on macOS and the Ctrl key on Windows.</li>
+<li><strong>Option</strong> means the Option key on macOS and the Alt key on Windows.</li>
+</ul>
+<h3 id="quick-start">Quick start</h3>
+<p>This first lesson takes a few minutes. Do each step, and watch for its result.</p>
+<ol type="1">
+<li>Insert Samatas Analyzer on a track that has sound.</li>
+<li>Play your session, and leave it playing until the lesson ends. A blue line moves in the window. This line is the track's <strong>curve</strong>: it shows how loud each frequency is.</li>
+<li>Move the pointer over the spectrum display, the large area with the blue line. A thin line follows the pointer. A small label shows the frequency and the note at the pointer.</li>
+<li>Click <strong>Freeze</strong>, the snowflake in the lower right corner of the display. The picture stops, and the snowflake turns blue.</li>
+<li>Move the pointer over the curve. A box beside the pointer now shows the exact level too.</li>
+<li>Click <strong>Freeze</strong> again. The picture moves again.</li>
+<li>Drag up or down on the numbers along the bottom edge. The frequency range zooms.</li>
+<li>Click <strong>R</strong>, beside Freeze. The full range comes back.</li>
+<li>Click <strong>Help</strong> in the top right corner. Help turns blue.</li>
+<li>Rest the pointer on any control. A box at the bottom of the display says what the control does.</li>
+<li>Move the pointer to the curve name in the top left corner. Small controls appear under the name.</li>
+<li>Rest the pointer on each small control until the help box names Peak hold.</li>
+<li>Click that control. A heavy line builds at the highest level of each frequency.</li>
+<li>Click <strong>Waterfall</strong> in the top right corner. The last two seconds of sound show as a 3D stack.</li>
+<li>Drag on the stack. The stack turns.</li>
+<li>Click <strong>Waterfall</strong> again. The spectrum comes back.</li>
+</ol>
+<p>You now know the display, Freeze, the zoom, Help, Peak hold and the waterfall. For your next step, choose a task from the list below.</p>
+<h3 id="what-do-you-want-to-do">What do you want to do?</h3>
+<p>Each line below leads to the part of the manual for one task. The first two tasks use the <strong>side chain</strong>: a second input that your host can feed from another track or bus.</p>
+<ul>
+<li><a href="#comparing-your-mix-with-a-reference">Compare your mix with a reference</a></li>
+<li><a href="#14-routing-a-side-chain-in-your-host">Route a side chain in your host</a></li>
+<li><a href="#finding-the-pitch-of-a-kick">Find the pitch of a kick</a></li>
+<li><a href="#11-high-resolution">Separate two close bass notes</a></li>
+<li><a href="#reaching-a-loudness-target">Reach a loudness target</a></li>
+<li><a href="#following-one-frequency-over-time">Follow one frequency over time</a></li>
+<li><a href="#save-picture">Save an image of the display</a></li>
+<li><a href="#copying-presets-to-another-computer">Copy your presets to another computer</a></li>
+<li><a href="#21-image-to-sound">Draw an image with sound</a></li>
+</ul>
+<hr />
+<h2 id="2-features">2. Features</h2>
+<p><strong>Picture 2: Four views of one song.</strong> <img loading="lazy" decoding="async" src="manual_1p0/pic2_fourViews.avif" alt="pic2_fourViews" /></p>
+<p>Samatas Analyzer has:</p>
+<ul>
+<li>Real-time spectrum from 10 Hz to 20 kHz, and up to half the sample rate when you zoom out</li>
+<li>Three channel modes: Mono, L / R and Mid / Side</li>
+<li>Sidechain: your host's side-chain input as a live curve</li>
+<li>Peak hold (the highest level each frequency reaches) for every curve, and Average hold (the average level) for the track and Sidechain, in Mono</li>
+<li>Solo and mute for each curve, which change only what you see</li>
+<li>Response knob: how fast the reading falls, from 140 ms to 5000 ms</li>
+<li>Smooth knob: line smoothing from Off to 1/3 octave</li>
+<li>Tilt (0, 3.0 or 4.5 dB per octave), Detect (RMS or Peak) and Scale (Log or Linear)</li>
+<li>Classic Psychoacoustic view: 68 fixed bands that widen with frequency, similar to how the ear hears and the brain interprets, in the style of classic band analyzers</li>
+<li>High Resolution, to separate bass notes a semitone apart</li>
+<li>3D waterfall with turn, tilt, zoom and move, and rulers that narrow the stack to the range you choose</li>
+<li>Loudness metering in LUFS (BS.1770) or plain RMS, with a target and the gap to it</li>
+<li>One marker, with the interval, the harmonic and the level difference between it and the pointer</li>
+<li>Hover readout with the frequency, the note and its cents, and exact levels on a frozen picture or a hold line</li>
+<li>Freeze, with a frame slider to step back through the last two seconds</li>
+<li>User presets, a saved default and a built-in Image preset</li>
+<li>Undo and redo of up to 64 steps</li>
+<li>Save Picture: a PNG of the spectrum or the waterfall</li>
+<li>Corner resize, and an interface scale from 100% to 300%</li>
+<li>Built-in help for every control, in a box that can float in its own window</li>
+</ul>
+<hr />
+<h2 id="3-compatibility-and-installation">3. Compatibility and Installation</h2>
+<h3 id="systems">Systems</h3>
+<p>The Analyzer runs on:</p>
+<ul>
+<li><strong>macOS:</strong> AudioUnit (AU) and VST3. macOS 26.0 or later, Apple Silicon.</li>
+<li><strong>Windows:</strong> VST3. Windows 10 or 11, 64-bit (x86_64).</li>
+</ul>
+<p>The Analyzer is tested at 44.1, 48, 96 and 192 kHz.</p>
+<h3 id="installing-on-macos">Installing on macOS</h3>
+<p>The installer is not signed with an Apple Developer ID, so macOS stops it the first time you open it. You need to allow it only once. To install on macOS:</p>
+<ol type="1">
+<li><p>Open the file <code>SamatasAnalyzer-1.0.0-mac.dmg</code>. <img loading="lazy" decoding="async" src="manual_1p0/3_1OpenDmg.avif" alt="3_1OpenDmg" style="zoom:50%;" /></p></li>
+<li><p>To accept the licence agreement, click <strong>Agree</strong>. The disk image opens. <img loading="lazy" decoding="async" src="manual_1p0/3_2Agree.avif" alt="3_2Agree" style="zoom:50%;" /></p></li>
+<li><p>Double-click <strong>Install Samatas Analyzer.pkg</strong>.</p></li>
+</ol>
+<img loading="lazy" decoding="async" src="manual_1p0/3_3Install.avif" alt="3_3Install" style="zoom:50%;" />
+
+<ol start="4" type="1">
+<li><p>When macOS says it could not verify the installer, click <strong>Done</strong>. <img loading="lazy" decoding="async" src="manual_1p0/3_4Done.avif" alt="3_4Done" /></p></li>
+<li><p>Open <strong>System Settings &gt; Privacy &amp; Security</strong>. <img loading="lazy" decoding="async" src="manual_1p0/3_5Settings-4829925.avif" alt="3_5Settings" style="zoom:50%;" /></p></li>
+<li><p>Scroll down to <strong>Security</strong>. Next to the message about "Install Samatas Analyzer.pkg", click <strong>Open Anyway</strong>.</p></li>
+</ol>
+<img loading="lazy" decoding="async" src="manual_1p0/3_6Allow.avif" alt="3_6Allow" style="zoom:50%;" />
+
+<ol start="7" type="1">
+<li><p>Enter your password. Then click <strong>Open Anyway</strong> again. The installer starts. <img loading="lazy" decoding="async" src="manual_1p0/3_7OpenAnyway.avif" alt="3_7OpenAnyway" style="zoom:50%;" /></p></li>
+<li><p>Follow the installer's steps. The installer puts the AU and VST3 plugins in <code>/Library/Audio/Plug-Ins</code>, for all users.</p></li>
+</ol>
+<img loading="lazy" decoding="async" src="manual_1p0/3_8Installer.avif" alt="3_8Installer" style="zoom:50%;" />
+
+<ol start="9" type="1">
+<li>Start your host and let it scan for new plugins.</li>
+</ol>
+<img loading="lazy" decoding="async" src="manual_1p0/3_9ScanPlugins-4831707.avif" alt="3_9ScanPlugins" style="zoom:33%;" />
+
+<p>The disk image also holds the <a href="#21-image-to-sound">Image to Sound</a> page. To keep the page, drag it to a folder of your own before you eject the disk image.</p>
+<h3 id="removing-on-macos">Removing on macOS</h3>
+<p>macOS has no uninstaller for the Analyzer, so you remove three items by hand:</p>
+<ol type="1">
+<li>Close your host.</li>
+<li>In Finder, choose <strong>Go &gt; Go to Folder</strong>.</li>
+<li>Paste the first folder below. Then press <strong>Enter</strong>. Finder opens the folder.</li>
+<li>Drag the item listed for that folder to the Trash. macOS asks for your password.</li>
+<li>Do the same for the other two folders.</li>
+</ol>
+<p>The three folders, each with the item to remove:</p>
+<ul>
+<li><code>/Library/Audio/Plug-Ins/Components</code>: remove <code>SamatasAnalyzer.component</code></li>
+<li><code>/Library/Audio/Plug-Ins/VST3</code>: remove <code>SamatasAnalyzer.vst3</code></li>
+<li><code>/Library/Application Support/Samatas</code>: remove the folder <code>Samatas Analyzer</code> Your presets, your saved default and your interface scale stay on the Mac. If you install the Analyzer again, it finds them.</li>
+</ul>
+<h3 id="installing-on-windows">Installing on Windows</h3>
+<p>To install on Windows:</p>
+<ol type="1">
+<li>Run <code>SamatasAnalyzer-1.0.0-win-setup.exe</code>.</li>
+<li>If Windows warns that the publisher is unknown, click <strong>More info</strong>. Then click <strong>Run anyway</strong>.</li>
+<li>To accept the licence agreement, choose <strong>I accept the terms of the License Agreement</strong>.</li>
+<li>Follow the setup's steps. The setup installs the Microsoft Visual C++ runtime if needed, then puts the plugin in <code>C:\Program Files\Common Files\VST3\SamatasAnalyzer.vst3</code>. The setup also adds the <a href="#21-image-to-sound">Image to Sound</a> page to the Start menu, under <strong>Samatas</strong>.</li>
+<li>Start your host. Then rescan your VST3 plugins.</li>
+</ol>
+<h3 id="removing-on-windows">Removing on Windows</h3>
+<p>To remove the Analyzer:</p>
+<ol type="1">
+<li>Close your host. While a host has the Analyzer loaded, Windows cannot remove it.</li>
+<li>Open <strong>Settings &gt; Apps &gt; Installed apps</strong>. On Windows 10, open <strong>Settings &gt; Apps &gt; Apps &amp; features</strong>.</li>
+<li>Find <strong>Samatas Analyzer</strong> in the list.</li>
+<li>On Windows 11, click the three dots beside the name. On Windows 10, click the name.</li>
+<li>Click <strong>Uninstall</strong>.</li>
+</ol>
+<p>The uninstaller removes the plugin, the Image to Sound page and the Start menu item.</p>
+<p>Your presets, your saved default and your interface scale stay on the computer, and so do the WAV files you made. If you install the Analyzer again, it finds your presets.</p>
+<h3 id="finding-the-plugin-in-your-host">Finding the plugin in your host</h3>
+<p>Look for <strong>Samatas Analyzer</strong> by <strong>Samatas</strong>. It is an effect plugin, so you insert it on a track, a bus or the master.</p>
+<hr />
+<h2 id="4-the-window-at-a-glance">4. The Window at a Glance</h2>
+<p><strong>Picture 4.1: The parts of the window. <img loading="lazy" decoding="async" src="manual_1p0/4_1WindowParts.avif" alt="4_1WindowParts" /></strong></p>
+<p><strong>Picture 4.2: With the pointer away.</strong> <img loading="lazy" decoding="async" src="manual_1p0/4_2PointerAway.avif" alt="4_2PointerAway" /></p>
+<p>The window has two areas: the <strong>spectrum display</strong> at the top, which takes most of the window, and the <strong>control strip</strong> below it.</p>
+<h3 id="the-spectrum-display">The spectrum display</h3>
+<p>The display shows the curves over a grid. Five parts sit on it:</p>
+<ul>
+<li><strong>The channel panel</strong>, in the top left corner. It names each curve, gives each one a coloured dot, and shows the loudness readouts. Under each curve name are small words and icons for Solo, Mute, Peak hold and Average hold. <a href="#6-the-channel-panel-channel-modes-sidechain-and-holds">The Channel Panel</a> explains them.</li>
+<li><strong>The toolbar</strong>, in the top right corner. It holds a row of words and icons: the undo and redo arrows, Controls, Classic Psychoacoustic, Waterfall, the preset name and Help. <a href="#8-the-toolbar">The Toolbar</a> explains each one.</li>
+<li><strong>The Hz ruler</strong>, along the bottom edge. It shows the frequencies.</li>
+<li><strong>The dB ruler</strong>, along the right edge. It shows the levels.</li>
+<li><strong>The corner buttons</strong>, in the lower right corner: Enlarge (only with the waterfall on), Freeze and R. Enlarge makes the waterfall fill the display, Freeze holds the picture still, and R resets the zoom.</li>
+</ul>
+<h3 id="the-control-strip">The control strip</h3>
+<p>The control strip is the row of controls under the display: Smooth, Response, Tilt, Detect and Scale. To hide the strip, click <strong>Controls</strong> in the toolbar. The display then grows to fill its space.</p>
+<h3 id="resizing-the-window">Resizing the window</h3>
+<p>To resize the window, drag the <strong>corner grip</strong>: the small lines just inside the window's lower right corner. To return to the opening size, double-click the grip. To change the interface scale, right-click the grip. <a href="#18-window-size-and-interface-scale">Window Size and Interface Scale</a> explains both sizes.</p>
+<h3 id="what-hides-and-what-stays">What hides and what stays</h3>
+<p>When the pointer leaves the window, only the essentials to read the picture stay.</p>
+<p>The S, M, Peak hold and Average hold controls appear only while the pointer is near the channel panel and their curve has sound.</p>
+<hr />
+<h2 id="5-the-spectrum-display">5. The Spectrum Display</h2>
+<p><strong>Picture 5.1: The rulers at reset.</strong> <img loading="lazy" decoding="async" src="manual_1p0/5_1Reset.avif" alt="5_1Reset" /></p>
+<p><strong>Picture 5.2: Zoomed in.</strong> <img loading="lazy" decoding="async" src="manual_1p0/5_2Zoom.avif" alt="5_2Zoom" /></p>
+<p>This chapter explains how to read the display, how to zoom and move it, and how exact its readings are.</p>
+<h3 id="reading-the-display">Reading the display</h3>
+<p>The horizontal axis is frequency, in hertz (Hz). The vertical axis is level, in decibels (dB). Louder content sits higher.</p>
+<p>At rest, the Hz ruler shows 10 Hz to 20 kHz. The 100 Hz, 1 kHz and 10 kHz grid lines are a little brighter, to help you find your place. When you zoom in, more numbers and lines appear.</p>
+<p>The blue curve is your track. In Mono it has a filled area under it. The fill goes away while another line is on screen, for example the Sidechain curve, so every line stays easy to see. A <strong>hold line</strong> is a heavy line that keeps the highest level (Peak hold) or the average level (Average hold) of a curve. <a href="#6-the-channel-panel-channel-modes-sidechain-and-holds">The Channel Panel</a> explains both.</p>
+<h3 id="zooming-and-moving">Zooming and moving</h3>
+<p>You can zoom and move the spectrum from three places.</p>
+<p>On the dB numbers:</p>
+<ul>
+<li><strong>Drag:</strong> sideways zooms the level range, up or down moves the spectrum up and down.</li>
+<li><strong>Double-click:</strong> resets the levels only.</li>
+</ul>
+<p>On the Hz numbers:</p>
+<ul>
+<li><strong>Drag:</strong> up or down zooms the frequency range, sideways moves the spectrum left and right.</li>
+<li><strong>Double-click:</strong> resets the frequencies only.</li>
+</ul>
+<p>On the display:</p>
+<ul>
+<li><strong>Command-drag:</strong> zooms both axes around the point you pressed.</li>
+<li><strong>Option-drag:</strong> zooms into the box you draw.</li>
+<li><strong>Shift-drag:</strong> moves the spectrum around.</li>
+<li><strong>Double-click:</strong> resets both axes.</li>
+<li><strong>Click R:</strong> resets both axes (and the waterfall camera).</li>
+</ul>
+<p>On a Mac trackpad, over the display:</p>
+<ul>
+<li><strong>Pinch:</strong> zooms both axes around the pointer.</li>
+<li><strong>Two-finger swipe:</strong> moves the spectrum around, the way your fingers move.</li>
+</ul>
+<p>When you zoom out or move the spectrum, the frequency range can reach above 20 kHz, up to half the sample rate. To bring back the resting view, click <strong>R</strong> or double-click the display.</p>
+<h3 id="smoothed-lines-exact-readings">Smoothed lines, exact readings</h3>
+<p>The Smooth knob smooths the drawn lines, so busy music is easy to read. The <strong>readout box</strong> is the box beside the pointer. The <strong>marker</strong> is a frequency you pin on the display. The readout box and the marker use the unsmoothed measurement, so Smooth never changes a number you read. On a sharp peak, the readout box can therefore show a level a little above the drawn line. This difference is normal. <a href="#9-markers-and-the-hover-readout">Markers and the Hover Readout</a> explains both.</p>
+<h3 id="how-exact-the-readings-are">How exact the readings are</h3>
+<p>The Analyzer's own test suite measures the following accuracy:</p>
+<ul>
+<li><strong>Level of a steady tone:</strong> within 0.01 dB of its true level, at 44.1, 48, 96 and 192 kHz, whatever the tone's exact frequency.</li>
+<li><strong>Pitch of a steady tone:</strong> within 6 cents (tested at 41, 100 and 440 Hz).</li>
+<li><strong>White noise:</strong> within 0.6 dB of its true level (with High Resolution off), and flat within 0.5 dB per octave with Tilt at 0.</li>
+<li><strong>Response time:</strong> within about 0.5% of the time on the knob (a setting of 1000 ms gives 1001 to 1004 ms).</li>
+</ul>
+<h3 id="background-a-limit-near-loud-bass-notes">Background: a limit near loud bass notes</h3>
+<p>One limit belongs to every spectrum analyzer. On the display, a loud bass note spreads a little to the frequencies around it. A quiet sound just beside that note can therefore show too high. <a href="#11-high-resolution">High Resolution</a> makes this effect smaller.</p>
+<hr />
+<h2 id="6-the-channel-panel-channel-modes-sidechain-and-holds">6. The Channel Panel: Channel Modes, Sidechain and Holds</h2>
+<p><strong>Picture 6.1: The channel panel.</strong> <img loading="lazy" decoding="async" src="manual_1p0/6_1ChannelPanel.avif" alt="6_1ChannelPanel" style="zoom:50%;" /></p>
+<p><strong>Picture 6.2: The Channels menu.</strong> <img loading="lazy" decoding="async" src="manual_1p0/6_2channelMenu.avif" alt="6_2channelMenu" style="zoom:50%;" /></p>
+<p>The channel panel, in the top left corner of the display, names each curve. Use it to choose the channel mode, to show or hide curves, and to switch the hold lines on and off. <a href="#13-loudness-metering">Loudness Metering</a> explains its loudness readouts.</p>
+<h3 id="channel-modes">Channel modes</h3>
+<p>The first word in the channel panel names the channel mode. To open the Channels menu, click the word or the small down arrow next to it. The menu offers the following modes:</p>
+<ul>
+<li><strong>Mono</strong> (one curve, blue): left and right added and halved, measured as one signal. Phase matters: sounds out of phase cancel, just as they would on a mono speaker.</li>
+<li><strong>L / R</strong> (blue and green): left and right channels as two separate curves.</li>
+<li><strong>Mid / Side</strong> (blue and green): Mid (what is the same in both channels) and Side (what differs).</li>
+</ul>
+<p>On a mono track, the stereo modes are greyed out. Changing the channel mode clears all hold lines, the averages and the waterfall, and switches Freeze off.</p>
+<h3 id="channel-dots">Channel dots</h3>
+<p>Each curve name has a coloured dot in front of it. A curve's <strong>live line</strong> is the line that moves with the sound. To hide a curve's live line and its fill, click its dot. The curve's hold line stays. The readout box and the marker ignore a hidden line. In the waterfall, the dot hides that curve's stack.</p>
+<p>If you hide every line and no Peak hold is on, the dots flash while your host plays, to remind you that nothing is shown.</p>
+<h3 id="sidechain">Sidechain</h3>
+<p><strong>Sidechain</strong> is your host's side-chain input, drawn as an orange curve. Use it to compare your track with anything else in your session: a reference mix, another instrument, or a bus. To balance your song against a reference, see <a href="#comparing-your-mix-with-a-reference">Comparing your mix with a reference</a>.</p>
+<p>The Sidechain curve shows only while sound arrives on the side chain. After half a second of silence, the curve goes away and its name is greyed out.</p>
+<p>To route a side chain in your host, see <a href="#14-routing-a-side-chain-in-your-host">Routing a Side Chain in Your Host</a>.</p>
+<h3 id="solo-and-mute-s-and-m">Solo and mute (S and M)</h3>
+<p>Under each curve name are <strong>S</strong> and <strong>M</strong>:</p>
+<ul>
+<li><strong>S</strong> (Solo) dims every curve that is not soloed. You can solo more than one curve.</li>
+<li><strong>M</strong> (Mute) dims that curve. If a curve has both Solo and Mute, mute has priority.</li>
+</ul>
+<p>Solo and mute only change what you see. They never change a reading, and the Analyzer does not save them.</p>
+<h3 id="hovering-a-curve-name">Hovering a curve name</h3>
+<p>Move the pointer over any curve name. All other curves dim, so you can focus on that one curve.</p>
+<h3 id="peak-hold">Peak hold</h3>
+<p><strong>Peak hold</strong> draws a heavy line at the highest level each frequency has reached, with the live line faint under it. Use it to see how high each frequency got over a whole part. The Peak hold icon sits under each curve name. The line never falls by itself.</p>
+<ul>
+<li>To restart the line, <strong>Command-click</strong> Peak hold, or click it off and on. Only that curve's line restarts.</li>
+<li>Changing the channel mode, Classic Psychoacoustic, High Resolution, Scale or Detect also restarts the line.</li>
+</ul>
+<h3 id="average-hold">Average hold</h3>
+<p><strong>Average hold</strong> draws a heavy line at the average level of each frequency since you switched it on. The Average hold icon sits after Peak hold, under the track and under Sidechain, in Mono only.</p>
+<ul>
+<li>The average counts only while your host plays and the sound is not silent.</li>
+<li>On one curve, Peak hold and Average hold switch each other off.</li>
+<li>To restart an average, <strong>Command-click</strong> its Average hold.</li>
+<li>With Average hold on for the track and for Sidechain, <strong>Command-click</strong> on either one restarts both averages and both loudness meters. All readings then cover the same time.</li>
+<li>The changes that restart Peak hold restart Average hold too.</li>
+</ul>
+<p>Peak hold and Average hold both work for comparing your mix with a reference: turn the same one on for the track and for Sidechain.</p>
+<h3 id="comparing-your-mix-with-a-reference">Comparing your mix with a reference</h3>
+<p>Average hold on the track and on Sidechain shows the balance of lows, mids and highs of your mix next to a reference. Use it to balance your song against a reference song of the same genre. You can also use another song from the same album, so the album sounds consistent. Try to compare the choruses. A chorus is usually the fullest part of a song, so two choruses make a fair comparison.</p>
+<p>Try this:</p>
+<ol type="1">
+<li>Route the reference to the side chain, as <a href="#14-routing-a-side-chain-in-your-host">Routing a Side Chain in Your Host</a> explains.</li>
+<li>In your arrangement, place the reference's chorus so it plays at the same time as your chorus.</li>
+<li>Set the channel mode to Mono. Average hold works only in Mono.</li>
+<li>Set a loop around your chorus.</li>
+<li>Play the loop. The blue curve and the orange Sidechain curve both move.</li>
+<li>In the channel panel, turn on Average hold for the track and for Sidechain.</li>
+<li>When the loop starts again, <strong>Command-click</strong> either Average hold. The averages and both loudness meters start again together.</li>
+<li>Let the loop play two or three times.</li>
+<li>Read the gap after the track's loudness readout. This gap is the gain that brings your mix to the level of the reference. For example, +3 dB means that you must raise your mix by 3 dB to match the reference.</li>
+<li>Compare the shapes of the two lines, not their heights. Where your blue line rises above the orange line more than elsewhere, your mix has more of that range than the reference. Where your blue line falls below the orange line more than elsewhere, your mix has less of that range.</li>
+</ol>
+<p>To hear only your mix in Logic, mute the reference track: a muted track still reaches the side chain. In another host, check that the Sidechain curve still shows after you mute.</p>
+<hr />
+<h2 id="7-the-control-strip">7. The Control Strip</h2>
+<p><strong>Picture 7.1: The control strip.</strong> <img loading="lazy" decoding="async" src="manual_1p0/7_1ControlStrip.avif" alt="7_1ControlStrip" style="zoom:50%;" /></p>
+<p><strong>Picture 7.2: Typing a Response time.</strong> <img loading="lazy" decoding="async" src="manual_1p0/7_2ControlParameter.avif" alt="7_2ControlParameter" style="zoom:50%;" /></p>
+<p>The control strip holds five controls. This chapter describes them from left to right.</p>
+<p>To use a knob:</p>
+<ul>
+<li><strong>Drag up or down:</strong> turns the knob.</li>
+<li><strong>Shift-drag:</strong> makes a fine change.</li>
+<li><strong>Double-click:</strong> and <strong>Option-click</strong> returns the knob to its default.</li>
+</ul>
+<h3 id="smooth">Smooth</h3>
+<p>Smooth sets how much the Analyzer smooths the drawn lines. The steps are Off, 1/96, 1/48, 1/24, 1/12, 1/6 and 1/3 octave. The default is 1/24 octave.</p>
+<ul>
+<li>Less smoothing shows more detail but looks busier.</li>
+<li>More smoothing shows the overall shape of the sound.</li>
+<li>Smoothing changes only the drawn lines. The readings stay exact.</li>
+<li>Smooth is greyed out in the Classic Psychoacoustic view, because the view has its own fixed bands.</li>
+</ul>
+<h3 id="response">Response</h3>
+<p>Response sets how fast the reading follows the sound. The range is 140 ms to 5000 ms.</p>
+<ul>
+<li>Short times follow fast changes, like drum hits.</li>
+<li>Long times show a steadier, calmer picture.</li>
+</ul>
+<p>The value is the real time a steady tone's reading takes to fall by 20 dB after the tone stops. With Detect on RMS, Response also slows the rise. With Detect on Peak, the reading jumps up at once and Response sets only the fall.</p>
+<p><strong>Type a value.</strong> Try this:</p>
+<ol type="1">
+<li>Click the value box under the knob. A small text field opens.</li>
+<li>Type a number. A plain number is in milliseconds. A number ending in <strong>s</strong> is in seconds (for example <code>2.5s</code>). A comma works as a decimal point.</li>
+<li>Press <strong>Enter</strong>.</li>
+</ol>
+<p>To close the field, press <strong>Escape</strong> or click outside it.</p>
+<p><strong>The shortest time.</strong> The Classic Psychoacoustic view, High Resolution and the sample rate each set a shortest possible Response time. The shortest time is about 0.5 s in the Classic Psychoacoustic view and about 1 s with High Resolution. The knob stops at that time, and the part of the knob below it is dim. The Analyzer keeps the time you chose and brings it back when the limit goes away. The knob always shows the time really in use.</p>
+<h3 id="tilt">Tilt</h3>
+<p>Tilt slopes the whole picture so a balanced mix looks roughly flat. <a href="#background-why-tilt">Background: why Tilt</a> gives the reason. Tilt offers these choices:</p>
+<ul>
+<li><strong>4.5 dB/oct</strong> (the default) suits full mixes.</li>
+<li><strong>3.0 dB/oct</strong> suits single instruments, and makes pink noise look flat.</li>
+<li><strong>0.0 dB/oct</strong> shows the real energy, with no tilt.</li>
+</ul>
+<p>The Classic Psychoacoustic view holds Tilt at 0. Your tilt comes back when you leave the view.</p>
+<h3 id="detect">Detect</h3>
+<p>Detect sets how the Analyzer measures each frequency's level:</p>
+<ul>
+<li><strong>RMS</strong> shows the average level over the Response time. Use RMS to judge the overall balance.</li>
+<li><strong>Peak</strong> jumps to every hit, then falls at the Response speed. Use Peak for single tones and for short sounds like drum hits.</li>
+</ul>
+<p>Switching Detect restarts the Peak hold lines and the averages, and switches Freeze off.</p>
+<h3 id="scale">Scale</h3>
+<p>Scale sets the frequency axis:</p>
+<ul>
+<li><strong>Log</strong> (from 10 Hz) gives each octave the same width. Log matches how we hear and suits most work.</li>
+<li><strong>Linear</strong> gives each hertz the same width. Use Linear to study harmonics, which sit evenly spaced on a linear axis.</li>
+</ul>
+<p>Switching Scale restarts the Peak hold lines and the averages, and switches Freeze off.</p>
+<h3 id="hiding-the-strip">Hiding the strip</h3>
+<p>To hide the strip, click <strong>Controls</strong> (the cog icon) in the toolbar. The window keeps its size, and the display grows to fill the space.</p>
+<h3 id="background-why-tilt">Background: why Tilt</h3>
+<p>Music has more energy at low frequencies than at high ones. With no tilt, the curve of a balanced mix slopes down toward the highs, and that slope hides problems. Tilt lifts the highs to make up for the difference, so a balanced mix looks flat. Pink noise falls by 3 dB per octave, so pink noise looks flat at 3.0 dB/oct.</p>
+<hr />
+<h2 id="8-the-toolbar">8. The Toolbar</h2>
+<p><strong>Picture 8.1: The toolbar and the corner buttons.</strong></p>
+<img loading="lazy" decoding="async" src="manual_1p0/8_1Toolbar.avif" alt="8_1Toolbar" style="zoom:50%;" />
+
+<img loading="lazy" decoding="async" src="manual_1p0/8_2CornerButtons.avif" alt="8_2CornerButtons" style="zoom:50%;" />
+
+<p><strong>Picture 8.2: A help box.</strong></p>
+<p><img loading="lazy" decoding="async" src="manual_1p0/8_3HelpBox.avif" alt="8_3HelpBox" /></p>
+<p>The toolbar sits at the top right of the display. From left to right, it holds:</p>
+<ul>
+<li><strong>Undo / Redo</strong> (arrows): steps back and forward through your changes. See <a href="#16-undo-and-redo">Undo and Redo</a>.</li>
+<li><strong>Controls</strong> (cog): shows or hides the control strip.</li>
+<li><strong>Classic Psychoacoustic</strong>: switches the psychoacoustic band view on and off. See <a href="#10-classic-psychoacoustic-view">Classic Psychoacoustic View</a>.</li>
+<li><strong>Waterfall</strong>: switches the 3D waterfall on and off. See <a href="#12-the-waterfall">The Waterfall</a>.</li>
+<li><strong>Preset</strong>: shows the name of the last preset loaded or saved (<strong>Default</strong> on a new Analyzer), and opens the preset menu. See <a href="#15-presets">Presets</a>.</li>
+<li><strong>Help</strong>: turns the help boxes on and off.</li>
+</ul>
+<p>An icon or word that is switched on, such as Waterfall or Help, turns blue. The undo and redo arrows are blue while they have a step to take.</p>
+<p>Three more buttons sit in the lower right corner of the display, from left to right:</p>
+<ul>
+<li><strong>Enlarge</strong> (four chevrons): in the waterfall only, makes the 3D stack fill the display.</li>
+<li><strong>Freeze</strong> (snowflake): freezes the picture.</li>
+<li><strong>R</strong>: resets the zoom, and the waterfall camera.</li>
+</ul>
+<h3 id="freeze">Freeze</h3>
+<p>To hold the picture still, click <strong>Freeze</strong>. Freeze works in every view. While the picture is frozen, move the pointer over the curves to read exact levels from the frozen <strong>frame</strong>. A frame is one measurement of the whole spectrum. The Analyzer keeps the last 48 frames, about two seconds of sound.</p>
+<p><strong>Hold to freeze.</strong> Press and hold Freeze. The picture freezes only until you let go. Use it to catch one moment.</p>
+<p>Freeze switches off when you load a preset or change the channel mode, Detect, Scale, Classic Psychoacoustic or High Resolution. Freeze stays on when you switch the waterfall on or off, so both views show the same frozen moment.</p>
+<p>While the picture is frozen, the Peak hold lines and the averages do not count the sound that plays. The loudness meters keep counting.</p>
+<p>Freeze is always off when the window opens. While the picture is frozen, the snowflake is blue, and the corner buttons stay on the display even when the pointer leaves the window.</p>
+<h3 id="the-frame-slider">The frame slider</h3>
+<p>While the picture is frozen, a thin frame slider shows at the right side of the display. To step back through the kept frames, drag the slider up. The lines of the frame you pick replace the live lines, and the readout box shows the exact levels of that frame. Hold lines do not change. Each freeze starts on the newest frame. The enlarged waterfall view hides the frame slider.</p>
+<h3 id="help">Help</h3>
+<p>When <strong>Help</strong> is on, rest the pointer on any control. A help box at the bottom of the display says what the control does. Some help texts also say why a control is greyed out.</p>
+<p>Menus explain their items too. With Help on, each menu shows a line at the bottom that says what the item under the pointer does.</p>
+<p><strong>Floating help.</strong> To move the help box into a window of its own, click the icon in its top right corner. You can drag the window anywhere. To resize the window, drag its corner grip. The window keeps the last help text while the pointer is elsewhere, so you can read while you work. To put the box back over the display, click the icon again.</p>
+<p>If the floating window gets lost behind the host or off the screen, <strong>Command-click</strong> <strong>Help</strong> to bring it back. Turning Help off hides the window, and turning Help on shows it again.</p>
+<h3 id="messages">Messages</h3>
+<p>After some actions, such as activating the Classic Psychoacoustic mode for the first time, the Analyzer shows a short message. Messages show in the same place as the help box, even with Help off. An error shows in amber. A message goes away after a few seconds. To close a message sooner, click it.</p>
+<hr />
+<h2 id="9-markers-and-the-hover-readout">9. Markers and the Hover Readout</h2>
+<p><strong>Picture 9.1: The readout box.</strong></p>
+<p><img loading="lazy" decoding="async" src="manual_1p0/9_1ReadoutBox.avif" alt="9_1ReadoutBox" /></p>
+<p>The readout box and the marker give exact numbers: the frequency, the note, the level, and the distance between two points.</p>
+<h3 id="the-hover-readout">The hover readout</h3>
+<p>Move the pointer over the display. A thin <strong>hover line</strong> follows it. What you can read next to the hover line depends on whether the picture moves or holds still.</p>
+<p><strong>While the picture moves</strong> and no hold line is on, the levels change too fast to read. You can still read the pitch under the pointer. A small label near the bottom of the display, the <strong>hover tag</strong>, shows the pointer's frequency, its note name and its cents. The cents say how far the pitch is from that note, in hundredths of a semitone. If you have placed a marker, a box replaces the hover tag. The box shows the same three values, plus the interval between the pointer and the marker.</p>
+<p><strong>While the picture is frozen, or a hold line is on</strong>, a readout box shows levels too. The levels show as soon as you switch on a Peak hold or an Average hold. A line that holds still is a <strong>steady line</strong>: a hold line, or any line while the picture is frozen. The readout box shows:</p>
+<ul>
+<li><strong>First line:</strong> the frequency, the note and its cents.</li>
+<li><strong>One line for each curve that has a steady line:</strong> a coloured dot, a short name and the level. The short names are <strong>M</strong> for Mono or Mid, <strong>S</strong> for Side, <strong>L</strong>, <strong>R</strong>, and <strong>SC</strong> for Sidechain.</li>
+<li><strong>Hold</strong> or <strong>Avg</strong> after a level: the level comes from a Peak hold line or from an Average hold line.</li>
+</ul>
+<p><strong>Snapping.</strong> When the readout box shows a level, the reading jumps to a peak close to the pointer. A dot marks the exact point of the reading. With no peak nearby, the reading stays at the pointer.</p>
+<p><strong>Shift for notes.</strong> Hold <strong>Shift</strong> while the pointer is over the display. The hover line jumps to the nearest musical note, and the readout shows the values exactly at that note.</p>
+<h3 id="the-marker">The marker</h3>
+<p>The marker pins one frequency so you can compare other points with it. For example, pin the lowest note (the fundamental) of a bass sound. Then check its harmonics. You can also check how far a ringing frequency sits from a kick's pitch.</p>
+<p>To place, move or remove the marker:</p>
+<ul>
+<li><strong>Click on the display:</strong> places the marker, or moves it there.</li>
+<li><strong>Shift-click:</strong> places the marker exactly on the note shown.</li>
+<li><strong>Drag the marker:</strong> move it. The marker snaps to peaks, as a click does.</li>
+<li><strong>Click on the marker:</strong> removes it.</li>
+<li><strong>Command-click on the display:</strong> removes it.</li>
+<li><strong>Right-click the display and choose Clear Marker:</strong> removes it.</li>
+</ul>
+<p>A double-click resets the zoom and leaves the marker where it was.</p>
+<p>The marker shows as a dot on the blue curve, and on the green curve in L / R and Mid / Side. Sidechain and hidden curves get no dot. A tag above the Hz ruler gives the marker's frequency.</p>
+<p>With Peak hold on, or while the picture is frozen, the marker snaps to a peak close to the click. A drag snaps in the same way, so the marker moves from peak to peak. In the Classic Psychoacoustic view, the marker snaps to the middle of the nearest band. While the picture moves with no Peak hold, the marker lands exactly where you click.</p>
+<p>When you hover away from the marker, the readout box compares the pointer with it:</p>
+<ul>
+<li>The <strong>vs marker</strong> line gives the interval in semitones and cents, for example "vs marker +19 st +2c".</li>
+<li>A harmonic line, from "2nd harmonic" to "16th harmonic", shows when the pointer is close to a whole multiple of the marker's frequency. Twice the marker's frequency is the 2nd harmonic, and three times is the 3rd.</li>
+<li>On steady lines, each level line also ends with its difference from the marker, for example "M −44.8 dB (−5.1 dB vs marker)".</li>
+<li>With the hover line on the marker, in L / R or Mid / Side, the second level line gives its difference from the first, for example "S −46.5 dB (−3.1 dB vs M)".</li>
+</ul>
+<h3 id="finding-the-pitch-of-a-kick">Finding the pitch of a kick</h3>
+<p>To find the pitch of a kick, and how far a ringing frequency sits from it:</p>
+<ol type="1">
+<li>Play the kick.</li>
+<li>Click <strong>Freeze</strong> while the kick shows on the display. If you clicked too late, drag the frame slider up until the kick shows.</li>
+<li>Move the pointer over the lowest strong peak. The readout box shows the peak's frequency, its note and its cents.</li>
+<li>Click the peak. The marker pins that frequency.</li>
+<li>Move the pointer over the ringing peak. The <strong>vs marker</strong> line shows the distance from the kick, in semitones and cents.</li>
+</ol>
+<p>For a finer reading in the low frequencies, switch on High Resolution before step 1. Switching it on later switches Freeze off, and you must freeze again. <a href="#11-high-resolution">High Resolution</a> explains how.</p>
+<hr />
+<h2 id="10-classic-psychoacoustic-view">10. Classic Psychoacoustic View</h2>
+<p><strong>Picture 10.1: Band detail.</strong></p>
+<p><img loading="lazy" decoding="async" src="manual_1p0/10_1Psychoacoustic.avif" alt="10_1Psychoacoustic" /></p>
+<p>To see the spectrum as 68 bands instead of one fine line, click <strong>Classic Psychoacoustic</strong>. The view works in the style of the classic band analyzers used in mastering.</p>
+<p><strong>When to use it:</strong> to judge the overall balance of a mix without the fine detail, or to compare with readings from a classic band analyzer.</p>
+<h3 id="how-the-view-measures">How the view measures</h3>
+<p>In this view:</p>
+<ul>
+<li>The Analyzer splits the spectrum into 68 fixed bands, in eight groups. The bands of each group are twice as wide as the bands of the group before.</li>
+<li>Then it measures one level for each band, RMS or Peak as Detect sets it.</li>
+<li>Then it draws a smooth curve through the middle of each band.</li>
+</ul>
+<p>The band edges depend on the sample rate.</p>
+<h3 id="band-detail">Band detail</h3>
+<p>In this view, the readout shows whole bands. Move the pointer over the display, and the readout jumps to the middle of the nearest band. The readout's first line gives the band number, the band's edges and the band's level.</p>
+<h3 id="what-changes-in-the-controls">What changes in the controls</h3>
+<p>While the view is on, some controls change:</p>
+<ul>
+<li><strong>Smooth</strong> is greyed out, because the bands are fixed.</li>
+<li><strong>Tilt</strong> stays at 0. Your tilt comes back when you leave the view.</li>
+<li><strong>Response</strong> cannot go faster than about 0.5 s.</li>
+<li>High Resolution is greyed out.</li>
+<li>Detect, the channel modes and the hold lines work as in other modes.</li>
+</ul>
+<p>Switching the view on or off clears the hold lines, the averages and the waterfall, and switches Freeze off.</p>
+<h3 id="why-psychoacoustic">Why "psychoacoustic"</h3>
+<p>Psychoacoustics is the study of how we hear sound. The ear turns the vibrations of the air into electrical signals, and the brain interprets those signals. Humans do not hear all frequencies in the same detail. Our hearing groups sound into bands that get wider as the frequency rises.</p>
+<p>The view's bands widen in a similar way. Low notes get narrow bands, and high frequencies share wide bands. The view does not weight levels for loudness. Each band shows its true energy.</p>
+<hr />
+<h2 id="11-high-resolution">11. High Resolution</h2>
+<p><strong>Picture 11.1: Without High Resolution, two bass notes a semitone apart show as one peak.</strong></p>
+<p><img loading="lazy" decoding="async" src="manual_1p0/11_1NoHighres.avif" alt="11_1NoHighres" /></p>
+<p><strong>Picture 11.2: With High Resolution, the same two notes show as two peaks.</strong></p>
+<p><img loading="lazy" decoding="async" src="manual_1p0/11_2Highres.avif" alt="11_2Highres" /></p>
+<p>To see finer detail in the bass, right-click the display and choose <strong>High Resolution</strong>. The Analyzer then measures a longer piece of sound for each picture. To switch High Resolution off, choose it again.</p>
+<p><strong>When to use it:</strong> to separate close notes in the bass. The normal view shows two notes a semitone apart as two peaks only from about 230 Hz up. Below that frequency, the normal view merges them into one peak. With High Resolution, the two notes show as two peaks from about 40 Hz up, so from the note E1 up. At 192 kHz, they separate from about 60 Hz up.</p>
+<p><strong>What it costs:</strong></p>
+<ul>
+<li>The picture reacts more slowly. Response cannot go faster than about 1 s, or about 0.5 s at 192 kHz.</li>
+<li>Noise and other dense sounds show up to 9 dB lower. Pure tones still show their exact level.</li>
+</ul>
+<p>High Resolution is greyed out in the Classic Psychoacoustic view. Switching High Resolution on or off clears the hold lines, the averages and the waterfall, and switches Freeze off.</p>
+<hr />
+<h2 id="12-the-waterfall">12. The Waterfall</h2>
+<p><strong>Picture 12.1: The waterfall's parts.</strong> <img loading="lazy" decoding="async" src="manual_1p0/12Waterfall.avif" alt="12Waterfall" /></p>
+<p><strong>Picture 12.2: Enlarged and turned.</strong> <img loading="lazy" decoding="async" src="manual_1p0/12bWaterfallEnlarged.avif" alt="12bWaterfallEnlarged" /></p>
+<p>To see the last two seconds of sound as a 3D stack, click <strong>Waterfall</strong>. The newest frame is at the front, and older frames go to the back. Use the waterfall to see how a sound changes over time. You can turn the stack with the camera and narrow it to a range of frequencies and levels with the rulers.</p>
+<h3 id="parts-of-the-waterfall-view">Parts of the waterfall view</h3>
+<p>The waterfall view has three parts:</p>
+<ul>
+<li><strong>The stack:</strong> the 3D picture, with one line for each frame.</li>
+<li><strong>The level band:</strong> a flat strip above the stack. It shows the newest frame as a normal spectrum, with its own dB scale.</li>
+<li><strong>The frame slider:</strong> a thin slider at the right side of the display. It shows while the picture is frozen. It hides when the waterfall is enlarged.</li>
+</ul>
+<p>The waterfall hides the loudness readouts. The meters keep measuring, and the readouts come back when you leave the waterfall.</p>
+<h3 id="moving-the-camera">Moving the camera</h3>
+<p>To move the camera:</p>
+<ul>
+<li><strong>Drag:</strong> turns and tilts the stack.</li>
+<li><strong>Shift-drag, or two-finger swipe on a Mac trackpad:</strong> moves the stack sideways, up or down.</li>
+<li><strong>Command-drag, the mouse wheel, or pinch on a Mac trackpad:</strong> zooms the stack.</li>
+<li><strong>Double-click:</strong> resets the camera.</li>
+<li><strong>Click R:</strong> resets the camera, and also the frequency and level ranges.</li>
+</ul>
+<h3 id="focusing-on-a-range">Focusing on a range</h3>
+<p>The rulers work in the waterfall as they do in the spectrum view. Use them to make the stack show only the frequencies and levels you care about. For example, show only the bass, or only the top 30 dB. The camera and the rulers work together: the rulers choose what the stack shows, and the camera chooses how you look at it.</p>
+<p>To set the range:</p>
+<ul>
+<li><strong>Drag up or down on the Hz numbers:</strong> zooms the frequency range.</li>
+<li><strong>Drag sideways on the Hz numbers:</strong> moves the frequency range.</li>
+<li><strong>Drag sideways on the dB numbers:</strong> zooms the level range.</li>
+<li><strong>Drag up or down on the dB numbers:</strong> moves the level range.</li>
+<li><strong>Double-click the Hz numbers or the dB numbers:</strong> resets that range only.</li>
+</ul>
+<p>Drags on the stack move the camera, so in the waterfall the rulers are the only way to change the range. Click <strong>R</strong> to reset the range and the camera together.</p>
+<h3 id="channels-in-the-waterfall">Channels in the waterfall</h3>
+<p>In L / R and Mid / Side, a green stack stands beside the blue stack. To hide a stack, click its channel dot. To dim the other stacks, hover a curve name in the channel panel. The waterfall shows Sidechain too, a little lighter.</p>
+<h3 id="enlarge">Enlarge</h3>
+<p>To let the stack fill the whole display, click <strong>Enlarge</strong>. Enlarge hides the level band, the frame slider and the dB numbers. While the stack is enlarged:</p>
+<ul>
+<li>The rulers still work. The dB numbers are hidden, but you can drag or double-click the dB area on the right as before.</li>
+<li>To pick a frame while frozen, Command-scroll on the stack.</li>
+<li>You cannot place or move the marker.</li>
+</ul>
+<h3 id="marker-and-hover-in-the-waterfall">Marker and hover in the waterfall</h3>
+<p>The spectrum view and the waterfall share one marker. To place or move the marker, click in the level band. Here the marker lands exactly where you click and does not snap to a peak. The marker's dots show in the level band and in the stack. To remove the marker, Command-click the stack.</p>
+<p>The hover line works in the level band as it does in the spectrum view. The frequency, the note and the cents show at the foot of the band, and Shift snaps the hover line to the nearest note. While the picture is frozen, the readout box also shows the levels of the frame in the level band.</p>
+<h3 id="freeze-in-the-waterfall">Freeze in the waterfall</h3>
+<p>Freeze stops the stack, so you can turn it and study it. To step through the frozen frames, drag the frame slider. The level band shows the frame you pick. In the stack, that frame stays bright and the other frames dim.</p>
+<h3 id="following-one-frequency-over-time">Following one frequency over time</h3>
+<p>A frequency that stays loud, such as a harsh tone in a voice, shows in the stack as a ridge that runs from the back to the front. To find such a frequency and follow it:</p>
+<ol type="1">
+<li>Click <strong>Waterfall</strong>.</li>
+<li>Play the part.</li>
+<li>Drag on the Hz numbers until the stack shows only the range you want to study.</li>
+<li>Drag on the stack until you see the ridges clearly.</li>
+<li>Click on the ridge's peak in the level band. The marker pins that frequency, and a tag above the Hz ruler gives its value.</li>
+<li>Look at the marker's dots in the stack. The dots follow that frequency through all the frames, so you see where it rises and falls.</li>
+</ol>
+<hr />
+<h2 id="13-loudness-metering">13. Loudness Metering</h2>
+<p><strong>Picture 13.1: The loudness menu.</strong> <img loading="lazy" decoding="async" src="manual_1p0/13Loudness.avif" alt="13Loudness" /></p>
+<p>The Analyzer measures loudness whenever your host plays, in every channel mode, even with the window closed.</p>
+<h3 id="the-readouts">The readouts</h3>
+<p>The loudness readouts sit on the line under the curve names. Each readout shows the <strong>integrated</strong> level: the level of everything played since the last restart. The track and Sidechain each have a readout. Sidechain's readout shows only while the side chain sends sound.</p>
+<p>The meters keep their value when you stop your host. The waterfall hides the readouts, but the meters keep counting.</p>
+<h3 id="units">Units</h3>
+<p>To choose the unit, click any readout. The loudness menu opens. Choose one of these units:</p>
+<ul>
+<li><strong>LUFS</strong>: loudness as defined by the ITU-R BS.1770 standard, used by streaming services and broadcast.</li>
+<li><strong>RMS</strong>: plain RMS level in dBFS (decibels relative to full scale), with no weighting filter.</li>
+</ul>
+<p>You can switch units at any time. The Analyzer measures both units together, so the new unit covers the same time as the old one. If another RMS meter shows 3 dB more, see <a href="#background-rms-and-the-aes17-standard">Background: RMS and the AES17 standard</a>.</p>
+<p>The Analyzer measures a mono track as it would sound from two speakers.</p>
+<h3 id="target-and-gap">Target and gap</h3>
+<p>A target is the level you aim for. With a target set, a <strong>gap</strong> follows each readout: the gain that would bring that signal to the target. The gap saves you the arithmetic. You do not subtract one level from the other: you apply the gap to the track as a gain. For example, with a target of −10 LUFS, a readout of −13 LUFS shows a gap of +3 dB. Raise the track by 3 dB, and it reaches the target. A gap is a gain, so it shows in dB in both units.</p>
+<p>Each unit has its own target. The defaults are −10 LUFS and −18 dBFS.</p>
+<p>To set the target for the unit shown, open <strong>Target</strong> in the loudness menu and choose:</p>
+<ul>
+<li><strong>None:</strong> no target, so no gap.</li>
+<li><strong>A common value:</strong> −9, −10, −14, −16 or −23 LUFS, or −12, −14, −18 or −20 dBFS.</li>
+<li><strong>Other...:</strong> type any whole value from 0 to −27. Then press <strong>Enter</strong>. You can leave out the minus sign, so <code>14</code> sets −14.</li>
+</ul>
+<p><strong>Comparing with Sidechain.</strong> While the side chain sends sound and Average hold is on, the gaps leave the target and compare your track with Sidechain. The track's gap is then the gain that brings your track to the level of the reference. For example, +3 dB means that your track is 3 dB quieter than the reference. <a href="#comparing-your-mix-with-a-reference">Comparing your mix with a reference</a> shows the whole task.</p>
+<h3 id="restarting">Restarting</h3>
+<p>The integrated level counts everything since the last restart. Restart the meters just before you play the part you want to measure. Restart in any of these ways:</p>
+<ul>
+<li>Click the small <strong>R</strong> before the track's readout.</li>
+<li><strong>Command-click</strong> any readout.</li>
+<li>Choose <strong>Restart Both Meters</strong> in the loudness menu.</li>
+<li>With Average hold on for the track and for Sidechain, <strong>Command-click</strong> either Average hold. This also starts both averages again.</li>
+</ul>
+<p>Each way restarts both meters together. Only the last one touches the averages.</p>
+<h3 id="reaching-a-loudness-target">Reaching a loudness target</h3>
+<p>The waterfall hides the readouts, so switch it off first. To measure one part of your session against a target:</p>
+<ol type="1">
+<li>Click a loudness readout and choose the unit, LUFS or RMS.</li>
+<li>Click the readout again. Then open <strong>Target</strong> and choose your target.</li>
+<li>In your host, go to the start of the part you want to measure.</li>
+<li>Click the small <strong>R</strong> before the track's readout. Both meters restart.</li>
+<li>Play the part to its end. Then stop.</li>
+<li>Read the gap after the readout. A gap of +3 dB means that the part is 3 dB below the target. To reach the target, raise the track by 3 dB..</li>
+</ol>
+<h3 id="background-rms-and-the-aes17-standard">Background: RMS and the AES17 standard</h3>
+<p>Another RMS meter can show 3 dB more than the Analyzer. Meters that follow the AES17 standard add 3 dB, so a full-scale sine wave shows 0 dBFS on them. The same sine wave shows −3.0 dBFS on the Analyzer. Neither reading is wrong.</p>
+<hr />
+<h2 id="14-routing-a-side-chain-in-your-host">14. Routing a Side Chain in Your Host</h2>
+<p>The Analyzer takes a side-chain input, mono or stereo. Every host routes a side chain a little differently. This chapter shows Logic Pro, Ableton Live and Reaper.. For another host, look up "side chain" in the host's manual: the Analyzer needs nothing special.</p>
+<h3 id="logic-pro">Logic Pro</h3>
+<p><strong>Picture 14.1: Choosing a side chain in Logic.</strong> <img loading="lazy" decoding="async" src="manual_1p0/14LogicSidechain.avif" alt="14LogicSidechain" style="zoom:50%;" /></p>
+<p>To route a side chain in Logic:</p>
+<ol type="1">
+<li>Insert Samatas Analyzer on your track.</li>
+<li>In the plugin window's header, open the <strong>Side Chain</strong> menu and choose the source track or bus.</li>
+</ol>
+<p>Good to know in Logic:</p>
+<ul>
+<li><strong>The track's fader.</strong> Logic sends the source track as it sounds after its plugins but before its fader. The track's fader, mute and solo change nothing on the Sidechain curve, so you can mute a reference track and still see it. To include the fader, send the track to a bus. Then choose the bus as the side chain.</li>
+<li><strong>Side Chain set to None.</strong> With no source chosen, Sidechain does not show..</li>
+<li><strong>After you stop.</strong> With a bus as the side chain, the Sidechain curve can keep moving for a second or two after you stop. <a href="#20-host-notes">Host Notes</a> explains what Logic does while stopped.</li>
+</ul>
+<h3 id="ableton-live">Ableton Live</h3>
+<p><strong>Picture 14.2: Choosing a side chain in Live.</strong></p>
+<img loading="lazy" decoding="async" src="manual_1p0/14bAbletonSidechain-5078550.avif" alt="14bAbletonSidechain" style="zoom:50%;" />
+
+<p>To route a side chain in Live:</p>
+<ol type="1">
+<li>Insert the Analyzer on your track.</li>
+<li>On the Analyzer's device, click the small triangle to unfold the device.</li>
+<li>Under <strong>Sidechain</strong>, choose the source track.</li>
+<li>In the menu below it, choose where Live takes the sound from: <strong>Pre FX</strong>, <strong>Post FX</strong> or <strong>Post Mixer</strong>. Post Mixer includes the track's fader.</li>
+</ol>
+<h3 id="reaper">Reaper</h3>
+<p>To route a side chain in Reaper:</p>
+<ol type="1">
+<li>Insert the Analyzer on your track. Keep the Analyzer's window open.</li>
+<li>Press the <strong>Route</strong> button of the source track, and hold the mouse button down.</li>
+<li>Drag to the Analyzer's window and let go. Reaper adds two channels to your track and sends the source track to them.</li>
+</ol>
+<p>Good to know in Reaper:</p>
+<ul>
+<li><strong>The fader.</strong> Reaper sends the source track after its fader, so the fader changes the Sidechain curve.</li>
+<li><strong>One source only.</strong> Drag only one source onto the Analyzer. Each new drag adds two more channels to your track.</li>
+</ul>
+<p>To see a reference in the Analyzer without hearing it:</p>
+<ol type="1">
+<li>Click your track's <strong>Route</strong> button. The routing window opens.</li>
+<li>Under <strong>Receives</strong>, find the receive from the reference track.</li>
+<li>In that receive's menu, choose <strong>Pre-Fader (Post-FX)</strong>. Reaper now takes the sound before the fader.</li>
+<li>Turn the reference track's fader all the way down. The reference is silent, and the Sidechain curve stays.</li>
+</ol>
+<h3 id="if-sidechain-does-not-show">If Sidechain does not show</h3>
+<p>Check these points:</p>
+<ul>
+<li><strong>Is the host playing?</strong> Logic sends no sound to plugins while stopped.</li>
+<li><strong>Does the source have sound right now?</strong> The Analyzer hides Sidechain after half a second of silence.</li>
+<li><strong>Is the Analyzer bypassed?</strong> A bypassed plugin gets no sound.</li>
+<li><strong>Did you hide the curve?</strong> To show it again, click the dot in front of the Sidechain name.</li>
+<li><strong>Is a source chosen?</strong> In Logic, check the Side Chain menu in the plugin window's header.</li>
+</ul>
+<hr />
+<h2 id="15-presets">15. Presets</h2>
+<p><strong>Picture 15.1: The preset menu.</strong> <img loading="lazy" decoding="async" src="manual_1p0/15Presets.avif" alt="15Presets" /></p>
+<p>A preset stores how the Analyzer is set up for a task. To open the preset menu, click the preset name in the toolbar. A new Analyzer shows <strong>Default</strong> there.</p>
+<h3 id="the-preset-menu">The preset menu</h3>
+<p>The preset menu holds the following items:</p>
+<ul>
+<li><strong>Default:</strong> loads your own default if you saved one, or else the built-in default. Default also returns the window to its opening size.</li>
+<li><strong>Factory Default:</strong> loads the built-in default. The menu shows this item only while you have your own default.</li>
+<li><strong>Image:</strong> loads a view tuned for the <a href="#21-image-to-sound">Image to Sound</a> page. Image turns on the waterfall and Enlarge.</li>
+<li><em>Your presets:</em> each preset you saved. Click a preset to load it.</li>
+<li><strong>Save "name":</strong> saves the current setup over that preset, without asking. The menu shows this item only for your own presets.</li>
+<li><strong>Save As...:</strong> saves the current setup under a new name. The names Default, Factory Default and Image are taken.</li>
+<li><strong>Options:</strong> the saved default, preset files and Delete. The next subsections explain them.</li>
+</ul>
+<p>Loading a preset switches Freeze off. A tick in the menu marks the preset in use. The tick goes away when you change a setting, and comes back when you change the setting back.</p>
+<h3 id="saved-default">Saved default</h3>
+<p>To make the current setup your default, choose <strong>Options &gt; Save As Default</strong>. Every new Analyzer you insert then opens with this setup. Sessions you saved earlier still open as they were.</p>
+<p>To go back to the built-in default, choose <strong>Options &gt; Clear Saved Default</strong>. The Analyzer moves your default to the Trash (the Recycle Bin on Windows).</p>
+<h3 id="the-preset-folder">The preset folder</h3>
+<p>Your presets live in the following folders:</p>
+<ul>
+<li><strong>macOS:</strong> <code>~/Library/Application Support/Samatas/Presets/SamatasAnalyzer</code></li>
+<li><strong>Windows:</strong> <code>%APPDATA%\Samatas\Presets\SamatasAnalyzer</code></li>
+</ul>
+<p>Each preset is one file ending in <code>.preset</code>, so you can copy presets between computers, also between a Mac and Windows. To open the folder, choose <strong>Options &gt; Show Preset Folder</strong>.</p>
+<p>To load a preset file from another place, choose <strong>Options &gt; Open Other Preset...</strong>. The Analyzer loads the file and does not copy it into the folder.</p>
+<h3 id="deleting-a-preset">Deleting a preset</h3>
+<p>To delete the preset in use, choose <strong>Options &gt; Delete</strong>. The Analyzer does not ask first, but it moves the file to the Trash (the Recycle Bin on Windows), so you can get it back.</p>
+<h3 id="copying-presets-to-another-computer">Copying presets to another computer</h3>
+<p>To take your presets to another computer:</p>
+<ol type="1">
+<li>In the preset menu, choose <strong>Options &gt; Show Preset Folder</strong>. The folder opens.</li>
+<li>Copy the preset files you want to the other computer.</li>
+<li>On the other computer, open the Analyzer's preset menu and choose <strong>Options &gt; Show Preset Folder</strong>.</li>
+<li>Put the files in that folder. The presets show in the preset menu.</li>
+</ol>
+<hr />
+<h2 id="16-undo-and-redo">16. Undo and Redo</h2>
+<p><strong>Picture 16.1: Undo available.</strong></p>
+<img loading="lazy" decoding="async" src="manual_1p0/16UndoRedo-5078608.avif" alt="16UndoRedo" style="zoom:50%;" />
+
+<p>The two arrows at the left end of the toolbar step back and forward through your changes. If you loaded a preset or changed the zoom by mistake, click the left arrow.</p>
+<p>A step is one change to a setting: a knob move, a view switch, a channel mode, a zoom or a preset. Quick changes in a row, such as one long drag of a knob, count as one step. The Analyzer keeps the last 64 steps.</p>
+<p>Some changes are not steps: Controls, Help, the marker, the window size, the interface scale, and changes made by host automation.</p>
+<p>Good to know:</p>
+<ul>
+<li>Undo brings back a setting, but not the hold lines and averages that the change cleared.</li>
+<li>The history stays while your session is open, even when you close the Analyzer's window.</li>
+<li>Your session does not save the history, so the history starts empty when you open the session again.</li>
+<li>An arrow is blue while it has a step to take, and greyed when it has none.</li>
+<li>Undo and redo never change Freeze.</li>
+<li>Command-Z undoes in your host, not in the Analyzer. To undo in the Analyzer, click the arrows.</li>
+</ul>
+<hr />
+<h2 id="17-the-display-menu-and-pictures">17. The Display Menu and Pictures</h2>
+<p><strong>Picture 17.1: The display menu.</strong> <img loading="lazy" decoding="async" src="manual_1p0/17SavePic.avif" alt="17SavePic" /></p>
+<p><strong>Picture 17.2: A saved image.</strong> <img loading="lazy" decoding="async" src="manual_1p0/17bSavedPic-4239440.avif" alt="17bSavedPic" /></p>
+<p>The display menu holds a few more commands. One of them, Save Picture, saves what you see as an image.</p>
+<h3 id="the-display-menu">The display menu</h3>
+<p>To open the display menu, right-click anywhere on the display, the waterfall stack included. The menu holds:</p>
+<ul>
+<li><strong>Channels:</strong> the three channel modes, as in the channel panel.</li>
+<li><strong>Loudness:</strong> the unit, the target and the restart, as in the loudness menu.</li>
+<li><strong>High Resolution:</strong> finer detail in the bass. See <a href="#11-high-resolution">High Resolution</a>.</li>
+<li><strong>Clear Marker:</strong> removes the marker.</li>
+<li><strong>Save Picture:</strong> saves the view as an image.</li>
+<li><strong>About:</strong> shows the version.</li>
+</ul>
+<h3 id="save-picture">Save Picture</h3>
+<p><strong>Save Picture</strong> saves the display as a PNG image, in the spectrum view and in the waterfall. Use it to keep a record of a mix or to show someone what you see. Choose a name and a place in the save window. To pick the exact moment, click Freeze first.</p>
+<p>The image shows the display as it looks when the pointer is away. It keeps the curves, the rulers, the channel panel and the marker and leaves out the rest. An image of the waterfall has no dB numbers.</p>
+<h3 id="about">About</h3>
+<p><strong>About</strong> shows the Analyzer's version and copyright. To close the box, click anywhere in the Analyzer's window.</p>
+<hr />
+<h2 id="18-window-size-and-interface-scale">18. Window Size and Interface Scale</h2>
+<p><strong>Picture 18.1: The scale menu.</strong> <img loading="lazy" decoding="async" src="manual_1p0/Screenshot_2026-11-09_at_5.54.10_PM.avif" alt="Screenshot 2026-11-09 at 5.54.10 PM" /></p>
+<p>You can change two sizes. The window size gives the display more room. The interface scale makes the text, the icons and the controls bigger. A bigger scale helps on a screen with very small pixels, or when you sit far from the screen.</p>
+<h3 id="resizing">Resizing</h3>
+<p>To resize the window, drag the corner grip at the lower right. Grab the grip's lines, a little inside the corner. In some hosts, the very corner belongs to the host's window. To return to the opening size, double-click the grip. The grip works in every host.</p>
+<p>On a Mac, the AU version does not resize from the edges of the host's window. If your host can load both versions, use the VST3. <a href="#on-a-mac-vst3-or-au">On a Mac: VST3 or AU</a> explains more.</p>
+<h3 id="interface-scale">Interface scale</h3>
+<p>To change the interface scale, right-click the corner grip and choose a size from 100% to 300%. Everything in the window grows together: text, icons, lines and controls.</p>
+<ul>
+<li>The Analyzer remembers the scale on this computer. Every session opens with it.</li>
+<li>A scale that is too big for your screen is greyed out.</li>
+<li>Other Analyzer windows that are already open take the new scale when you reopen them.</li>
+<li>On Windows, this scale comes on top of the display scaling of Windows.</li>
+</ul>
+<hr />
+<h2 id="19-mouse-and-key-reference">19. Mouse and Key Reference</h2>
+<p>This chapter lists the mouse actions and the modifier keys in one place, first for macOS and then for Windows. The Analyzer takes key presses only while you type a value, such as a Response time. At all other times, every key, the space bar included, goes to your host, so your transport shortcuts keep working. Shift, Option and Command only change what a click, a drag or a hover does.</p>
+<h3 id="macos">macOS</h3>
+<p>The following lists use the Mac key names: Shift, Option and Command.</p>
+<h4 id="spectrum-display">Spectrum display</h4>
+<ul>
+<li><strong>Hover:</strong> show the hover line with the frequency and the note, and the level on a steady line.</li>
+<li><strong>Shift + hover:</strong> snap the hover line to the nearest note.</li>
+<li><strong>Click:</strong> place or move the marker.</li>
+<li><strong>Shift-click:</strong> place the marker on the note.</li>
+<li><strong>Click on the marker:</strong> remove the marker.</li>
+<li><strong>Command-click:</strong> remove the marker.</li>
+<li><strong>Drag the marker:</strong> move it. The marker snaps to peaks, as a click does.</li>
+<li><strong>Double-click:</strong> reset the zoom.</li>
+<li><strong>Option-drag:</strong> zoom into a box.</li>
+<li><strong>Shift-drag:</strong> slide both axes.</li>
+<li><strong>Command-drag:</strong> zoom both axes.</li>
+<li><strong>Two-finger swipe on a trackpad:</strong> move the spectrum..</li>
+<li><strong>Pinch on a trackpad:</strong> zoom both axes.</li>
+<li><strong>Right-click:</strong> open the display menu.</li>
+</ul>
+<h4 id="rulers">Rulers</h4>
+<ul>
+<li><strong>Drag sideways on the dB numbers:</strong> zoom the level range.</li>
+<li><strong>Drag up or down on the dB numbers:</strong> move the level range.</li>
+<li><strong>Drag up or down on the Hz numbers:</strong> zoom the frequency range.</li>
+<li><strong>Drag sideways on the Hz numbers:</strong> move the frequency range.</li>
+<li><strong>Double-click the dB numbers:</strong> reset the levels only.</li>
+<li><strong>Double-click the Hz numbers:</strong> reset the frequencies only.</li>
+</ul>
+<h4 id="channel-panel">Channel panel</h4>
+<ul>
+<li><strong>Click a dot:</strong> hide or show that live line.</li>
+<li><strong>Click a curve name or its arrow:</strong> open the Channels menu.</li>
+<li><strong>Hover a curve name:</strong> dim the other curves.</li>
+<li><strong>Click S / M:</strong> Solo / Mute (view only).</li>
+<li><strong>Click Peak hold:</strong> switch it on or off. Each time you switch it on, the line starts again.</li>
+<li><strong>Command-click Peak hold:</strong> restart that line.</li>
+<li><strong>Click Average hold:</strong> switch it on or off.</li>
+<li><strong>Command-click Average hold:</strong> restart that average. With Average hold on for the track and for Sidechain, restart both averages and both loudness meters.</li>
+<li><strong>Click a loudness readout:</strong> open the loudness menu.</li>
+<li><strong>Ctrl-click a readout, or click the small R:</strong> restart both meters.</li>
+</ul>
+<h4 id="corner-buttons">Corner buttons</h4>
+<ul>
+<li><strong>Click Freeze:</strong> freeze on or off.</li>
+<li><strong>Hold Freeze over 300 ms:</strong> freeze until you let go.</li>
+<li><strong>Drag the frame slider up - down (while frozen):</strong> step back - forth through the kept frames.</li>
+<li><strong>Click Enlarge:</strong> in the waterfall, let the stack fill the display.</li>
+<li><strong>Click R:</strong> reset the zoom and the waterfall camera.</li>
+</ul>
+<h4 id="toolbar">Toolbar</h4>
+<ul>
+<li><strong>Click an active undo / redo arrow:</strong> undo or redo one step.</li>
+<li><strong>Click Controls, Classic Psychoacoustic, Waterfall or Help:</strong> switch it on or off.</li>
+<li><strong>Click the preset name:</strong> open the preset menu..</li>
+<li><strong>Command-click Help:</strong> bring back the floating help box.</li>
+<li><strong>Click the icon in the help box:</strong> move the help box into its own window, or back.</li>
+</ul>
+<h4 id="waterfall-stack">Waterfall stack</h4>
+<ul>
+<li><strong>Drag:</strong> turn and tilt.</li>
+<li><strong>Shift-drag:</strong> slide.</li>
+<li><strong>Command-drag or scroll the wheel:</strong> zoom.</li>
+<li><strong>Pinch on a trackpad:</strong> zoom.</li>
+<li><strong>Two-finger swipe on a trackpad:</strong> move the stack.</li>
+<li><strong>Double-click:</strong> reset the camera.</li>
+<li><strong>Click in the level band:</strong> place or move the marker, exactly where you click.</li>
+<li><strong>Command-click:</strong> remove the marker.</li>
+<li><strong>Command-scroll (frozen and enlarged):</strong> pick the frame.</li>
+<li><strong>Drag the Hz numbers or the dB numbers:</strong> change the range the stack shows, as under Rulers.</li>
+<li><strong>Right-click:</strong> open the display menu.</li>
+</ul>
+<h4 id="knobs">Knobs</h4>
+<ul>
+<li><strong>Drag up or down:</strong> turn the knob.</li>
+<li><strong>Shift-drag:</strong> fine adjustment.</li>
+<li><strong>Scroll over the knob:</strong> turn it.</li>
+<li><strong>Double-click or Option-click:</strong> back to the default.</li>
+<li><strong>Click the Response value:</strong> type a time.</li>
+</ul>
+<h4 id="window">Window</h4>
+<ul>
+<li><strong>Drag the corner grip:</strong> resize.</li>
+<li><strong>Double-click the corner grip:</strong> back to the opening size.</li>
+<li><strong>Right-click the corner grip:</strong> open the scale menu.</li>
+</ul>
+<h3 id="windows">Windows</h3>
+<p>The following lists use the Windows key names: Shift, Alt and Ctrl. They leave out the Mac trackpad gestures.</p>
+<h4 id="spectrum-display-1">Spectrum display</h4>
+<ul>
+<li><strong>Hover:</strong> show the hover line with the frequency and the note, and the level on a steady line.</li>
+<li><strong>Shift + hover:</strong> snap the hover line to the nearest note.</li>
+<li><strong>Click:</strong> place or move the marker.</li>
+<li><strong>Shift-click:</strong> place the marker on the note.</li>
+<li><strong>Click on the marker:</strong> remove the marker.</li>
+<li><strong>Drag the marker:</strong> move it. The marker snaps to peaks, as a click does.</li>
+<li><strong>Ctrl-click:</strong> remove the marker.</li>
+<li><strong>Double-click:</strong> reset the zoom.</li>
+<li><strong>Alt-drag:</strong> zoom into a box.</li>
+<li><strong>Shift-drag:</strong> move the spectrum..</li>
+<li><strong>Ctrl-drag:</strong> zoom both axes.</li>
+<li><strong>Right-click:</strong> open the display menu.</li>
+</ul>
+<h4 id="rulers-1">Rulers</h4>
+<ul>
+<li><strong>Drag sideways on the dB numbers:</strong> zoom the level range.</li>
+<li><strong>Drag up or down on the dB numbers:</strong> move the level range.</li>
+<li><strong>Drag up or down on the Hz numbers:</strong> zoom the frequency range.</li>
+<li><strong>Drag sideways on the Hz numbers:</strong> move the frequency range.</li>
+<li><strong>Double-click the dB numbers:</strong> reset the levels only.</li>
+<li><strong>Double-click the Hz numbers:</strong> reset the frequencies only.</li>
+</ul>
+<h4 id="channel-panel-1">Channel panel</h4>
+<ul>
+<li><strong>Click a dot:</strong> hide or show that live line.</li>
+<li><strong>Click the channel mode's name or its arrow:</strong> open the Channels menu.</li>
+<li><strong>Hover a curve name:</strong> dim the other curves.</li>
+<li><strong>Click S / M:</strong> Solo / Mute (view only).</li>
+<li><strong>Click Peak hold:</strong> switch it on or off. Each time you switch it on, the line starts again.</li>
+<li><strong>Ctrl-click Peak hold:</strong> restart that line.</li>
+<li><strong>Click Average hold:</strong> switch it on or off.</li>
+<li><strong>Ctrl-click Average hold:</strong> restart that average. With Average hold on for the track and for Sidechain, restart both averages and both loudness meters.</li>
+<li><strong>Click a loudness readout:</strong> open the loudness menu.</li>
+<li><strong>Ctrl-click a readout, or click R:</strong> restart both meters.</li>
+</ul>
+<h4 id="corner-buttons-1">Corner buttons</h4>
+<ul>
+<li><strong>Click Freeze:</strong> freeze on or off.</li>
+<li><strong>Hold Freeze over 300 ms:</strong> freeze until you let go.</li>
+<li><strong>Click Enlarge:</strong> in the waterfall, let the stack fill the display.</li>
+<li><strong>Click R:</strong> reset the zoom and the waterfall camera.</li>
+</ul>
+<h4 id="toolbar-1">Toolbar</h4>
+<ul>
+<li><strong>Click an active undo / redo arrow:</strong> undo or redo one step.</li>
+<li><strong>Click Controls, Classic Psychoacoustic, Waterfall or Help:</strong> switch it on or off.</li>
+<li><strong>Click the preset name:</strong> open the preset menu.</li>
+<li><strong>Ctrl-click Help:</strong> bring back the floating help box.</li>
+<li><strong>Click the icon in the help box:</strong> move the help box into its own window, or back.</li>
+</ul>
+<h4 id="waterfall-stack-1">Waterfall stack</h4>
+<ul>
+<li><strong>Drag:</strong> turn and tilt.</li>
+<li><strong>Shift-drag:</strong> move the stack.</li>
+<li><strong>Ctrl-drag or scroll the wheel:</strong> zoom.</li>
+<li><strong>Double-click:</strong> reset the camera.</li>
+<li><strong>Click in the level band:</strong> place or move the marker, exactly where you click.</li>
+<li><strong>Ctrl-click:</strong> remove the marker.</li>
+<li><strong>Ctrl-scroll (frozen and enlarged):</strong> pick the frame.</li>
+<li><strong>Drag the Hz numbers or the dB numbers:</strong> change the range the stack shows, as under Rulers.</li>
+<li><strong>Right-click:</strong> open the display menu.</li>
+</ul>
+<h4 id="knobs-1">Knobs</h4>
+<ul>
+<li><strong>Drag up or down:</strong> turn the knob.</li>
+<li><strong>Shift-drag:</strong> fine adjustment.</li>
+<li><strong>Scroll over the knob:</strong> turn it.</li>
+<li><strong>Double-click or Alt-click:</strong> back to the default.</li>
+<li><strong>Click the Response value:</strong> type a time.</li>
+</ul>
+<h4 id="window-1">Window</h4>
+<ul>
+<li><strong>Drag the corner grip:</strong> resize.</li>
+<li><strong>Double-click the corner grip:</strong> back to the opening size.</li>
+<li><strong>Right-click the corner grip:</strong> open the scale menu.</li>
+</ul>
+<hr />
+<h2 id="20-host-notes">20. Host Notes</h2>
+<p>Some hosts behave in ways that change what you see in the Analyzer. Find your host below. If the Sidechain curve does not show, see <a href="#if-sidechain-does-not-show">If Sidechain does not show</a>.</p>
+<h3 id="on-a-mac-vst3-or-au">On a Mac: VST3 or AU</h3>
+<p>On a Mac, the installer adds both a VST3 and an AU version. If your host can load both, as Live and Reaper can, use the VST3: the AU version resizes only from the corner grip. Logic Pro loads only the AU.</p>
+<p>With the AU version, the edges of the host's window can show resize arrows, as in Logic and Live, but dragging them does not resize the Analyzer. Drag the corner grip instead. If the host's window ends up larger than the Analyzer, drag the grip once, and the host fits its window again.</p>
+<h3 id="reaper-1">Reaper</h3>
+<p><strong>The picture can run ahead of the sound.</strong> Reaper works out effects up to 200 ms early. Reaper calls this "anticipative FX". The picture can then move up to 200 ms before you hear the sound. To keep the picture in time, right-click the track and open <strong>Track performance options</strong>. Then choose <strong>Prevent anticipative FX</strong>.</p>
+<p><strong>Use the VST3 version.</strong> With the VST3 version, you can resize the Analyzer from the edges and corners of Reaper's window. With the AU version, dragging the window's corner makes the window bigger but not the Analyzer, and white space appears. If you use the AU version, drag the corner grip, a little inside the corner.</p>
+<h3 id="logic-pro-1">Logic Pro</h3>
+<p>Logic sends no sound to plugins while playback is stopped or the Analyzer is bypassed, so the picture stands still until you play again. For the side chain in Logic, see <a href="#14-routing-a-side-chain-in-your-host">Routing a Side Chain in Your Host</a>.</p>
+<h3 id="bypass-and-the-loudness-meters">Bypass and the loudness meters</h3>
+<p>The loudness meters stop counting while your host bypasses the Analyzer. A closed window does not stop them.</p>
+<hr />
+<h2 id="21-image-to-sound">21. Image to Sound</h2>
+<p><strong>Picture 21.1: The Image to Sound page.</strong></p>
+<p><img loading="lazy" decoding="async" src="manual_1p0/22ImageToSound.avif" alt="22ImageToSound" /></p>
+<p><strong>Picture 21.2: The image played back.</strong></p>
+<img loading="lazy" decoding="async" src="manual_1p0/21Samatas.avif" alt="21Samatas" style="zoom:50%;" />
+
+<p>The Analyzer comes with a small extra, just for fun: a web page that turns an image into sound. When you play that sound, the waterfall draws the image.</p>
+<p>The page is called <strong>Samatas_Image_To_Sound.html</strong>. It opens in your web browser and needs no internet. Where you find it depends on your system:</p>
+<ul>
+<li><strong>macOS:</strong> the page is in the disk image, next to the installer. The installer does not copy the page to your Mac. To keep the page, drag it to a folder of your own.</li>
+<li><strong>Windows:</strong> the setup installs the page. To open it, choose <strong>Start &gt; Samatas &gt; Samatas Image To Sound</strong>.</li>
+</ul>
+<p>To draw an image with sound:</p>
+<ol type="1">
+<li>Open the page.</li>
+<li>Drop an image on the page.</li>
+<li>Follow the steps on the page to make a WAV file. Your browser saves the file in your Downloads folder.</li>
+<li>Import the WAV file into your host, on a track of its own.</li>
+<li>Switch off any time-stretching for that file, such as Warp in Live or Flex in Logic. Stretching changes the sound and spoils the image.</li>
+<li>Insert Samatas Analyzer on the track.</li>
+<li>In the Analyzer, click the preset name in the toolbar (<strong>Default</strong> on a new Analyzer) and choose <strong>Image</strong>.</li>
+<li>Play the track. The image appears in the waterfall.</li>
+<li>When the whole image shows, click <strong>Freeze</strong>. The image stays on the display.</li>
+</ol>
+<p>The Image preset sets the Analyzer up for the page: it turns on the waterfall and Enlarge, and switches High Resolution and Classic Psychoacoustic off. To return to your earlier setup, click the left undo arrow.</p>
+<hr />
+<h2 id="22-credits-and-notices">22. Credits and Notices</h2>
+<p>Samatas Analyzer is made by Ippokratis Bournellis.</p>
+<p>The interface uses the Inter typeface, under the SIL Open Font License. The plugin is built with JUCE. Full licence texts for these and other included components are in the notices file that comes with the installer. Zig is used for building and embedding data. Claude, by Anthropic, helped the developer through the whole project. Every decision, and every line that ships, was made and reviewed by the developer.</p>
+<p>AudioUnit is a trademark of Apple Inc. VST is a trademark of Steinberg Media Technologies GmbH. All other product names are trademarks of their owners and are used here only to describe host behaviour.</p>
+</main>
+<footer>
+    <p>&copy; 2026 Samatas. VST is a registered trademark of Steinberg Media Technologies GmbH. AudioUnit is a trademark of Apple Inc. All other trademarks are the property of their respective owners.</p>
+</footer>
+</div>
+</body>
+</html>

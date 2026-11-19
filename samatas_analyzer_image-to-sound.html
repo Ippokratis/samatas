@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Samatas Image To Sound</title>
+<style>
+:root {
+    --bg: #0a0c16;
+    --panel: #10131f;
+    --line: #222838;
+    --text: #cdd4e4;
+    --muted: #7f899e;
+    --blue: #4d9be0;
+    --amber: #e3a83a;
+    --fill: #5aa3c7;
+    --bad: #e2705f;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); }
+body {
+    font: 14px/1.45 "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    padding: 20px;
+}
+header { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+h1 { font-size: 15px; font-weight: 500; letter-spacing: 0.06em; color: var(--blue); margin: 0; text-transform: uppercase; }
+header p { margin: 0; color: var(--muted); }
+main { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+section, details { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 14px; margin-bottom: 14px; }
+h2, summary { font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); margin: 0 0 10px 0; }
+summary { cursor: pointer; margin: 0; }
+details[open] summary { margin-bottom: 10px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+label { display: block; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+label.wide { grid-column: 1 / -1; }
+input, select {
+    display: block; width: 100%; margin-top: 4px; padding: 6px 8px;
+    background: var(--bg); color: var(--text); border: 1px solid #39415a; border-radius: 4px;
+    font: inherit; letter-spacing: 0; text-transform: none;
+}
+input:focus-visible, select:focus-visible, button:focus-visible, #drop:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.note { font-size: 12px; color: var(--muted); margin: 8px 0 0 0; }
+#drop {
+    border: 1px dashed #39415a; border-radius: 4px; padding: 18px 12px; text-align: center;
+    color: var(--muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+#drop.over { border-color: var(--blue); color: var(--text); }
+#thumb { max-width: 100%; max-height: 110px; display: none; background: #fff; }
+button {
+    font: inherit; padding: 8px 14px; border-radius: 4px; border: 1px solid var(--fill);
+    background: var(--fill); color: #06121a; cursor: pointer;
+}
+button.plain { background: transparent; color: var(--text); border-color: #39415a; }
+button:disabled { opacity: 0.4; cursor: default; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+#status { color: var(--muted); }
+#status.bad { color: var(--bad); }
+canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; background: #05060c; border: 1px solid var(--line); }
+audio { width: 100%; margin-top: 10px; }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; }
+dt { color: var(--muted); }
+dd { margin: 0; }
+ol { margin: 0; padding-left: 20px; }
+ol li { margin-bottom: 4px; }
+.empty { color: var(--muted); margin: 0; }
+/* The hidden attribute must win over the display rules above (the file input). */
+[hidden] { display: none !important; }
+ol strong { font-weight: 600; color: #ffffff; }
+/* Consumer page: the same page and the same script as the dev version, with
+   every choice hidden. The hidden controls keep their default values and the
+   script still reads them. */
+/* One text colour, one accent (the title and the button), one text size (17px)
+   with a larger title, two gaps (8px inside a part, 40px between parts), one left and right edge. */
+body.consumer { --text: #e4e8f1; --muted: #e4e8f1; --blue: #5aa3c7; font-size: 17px; line-height: 1.5; padding-top: 40px; }
+body.consumer .dev { display: none; }
+body.consumer main { grid-template-columns: minmax(0, 560px); justify-content: center; }
+body.consumer header { display: block; max-width: 560px; margin: 0 auto 40px auto; }
+body.consumer h1 { font-size: 26px; line-height: 1.25; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--blue); margin: 0 0 8px 0; }
+body.consumer header p { color: var(--text); }
+body.consumer p, body.consumer li { text-wrap: pretty; }
+/* No boxes: white space separates the parts. The part headings stay for
+   screen readers and are not drawn. */
+body.consumer section { background: none; border: 0; border-radius: 0; padding: 0; margin-bottom: 40px; }
+body.consumer h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); margin: 0; }
+body.consumer .note, body.consumer #soundInfo { font-size: 17px; }
+body.consumer .note { margin-top: 8px; }
+body.consumer label.rate { display: block; margin-top: 8px; font-size: 17px; letter-spacing: 0; text-transform: none; color: var(--text); }
+body.consumer label.rate select { width: auto; margin-top: 8px; }
+/* The sound and the steps appear when there is something in them. */
+body.consumer section:has(#soundBox[hidden]),
+body.consumer section:has(#steps[hidden]) { display: none; }
+/* The drop area: large and empty at first; once a picture is in, a row the
+   height of the Download button. */
+body.consumer #drop { padding: 44px 16px; color: var(--text); }
+body.consumer #drop:has(#thumb[src]) { flex-direction: row; justify-content: flex-start; text-align: left; padding: 3px 12px 3px 3px; gap: 12px; }
+body.consumer #thumb { max-height: 44px; max-width: 40%; border-radius: 2px; }
+/* The status line shows only while working (the hidden button is disabled
+   then) or when something went wrong. */
+body.consumer .row:has(#status) { display: block; }
+body.consumer #status { display: none; margin: 0 0 40px 0; }
+body.consumer #go:disabled + #status, body.consumer #status.bad { display: block; }
+/* Download is the one action, and the only colour. The file details sit
+   beside it; the player closes the group. */
+body.consumer #soundBox .row { flex-direction: row; align-items: center; gap: 8px 16px; }
+body.consumer #download { font-size: 17px; font-weight: 400; padding: 12px 24px; }
+body.consumer audio { color-scheme: dark; margin-top: 8px; }
+/* The steps. The numbers hang on the page's left edge. */
+body.consumer .leadin { margin: 0 0 8px 0; }
+body.consumer ol { line-height: 1.6; padding: 0; list-style: none; counter-reset: step; }
+body.consumer ol li { position: relative; padding-left: 1.6em; margin-bottom: 8px; counter-increment: step; }
+body.consumer ol li::before { content: counter(step) "."; position: absolute; left: 0; }
+body.consumer ol li:last-child { margin-bottom: 0; }
+body.consumer ol strong { color: var(--text); font-weight: inherit; }
+</style>
+</head>
+<body class="consumer">
+<header>
+    <h1>Picture to waterfall</h1>
+    <p>Drop a picture. Get a sound that draws it on Samatas Analyzer's waterfall.</p>
+</header>
+
+<main>
+<div>
+    <section>
+        <h2>Choose a picture</h2>
+        <div id="drop" tabindex="0" role="button" aria-label="Choose a picture">
+            <img id="thumb" alt="">
+            <span id="dropText">Drop a JPG or PNG here, or click to choose one</span>
+        </div>
+        <input id="file" type="file" accept="image/*" hidden>
+        <p class="note">Simple shapes and thick letters work best. Dark on light or light on dark are both fine.</p>
+        <label class="rate">Session sample rate
+            <select id="sampleRate">
+                <option value="44100">44.1 kHz</option>
+                <option value="48000" selected>48 kHz</option>
+            </select>
+        </label>
+    </section>
+
+    <section class="dev">
+        <h2>How the analyser is set</h2>
+        <div class="grid">
+            <label>Freq
+                <select id="axis">
+                    <option value="logsub">Log Sub</option>
+                    <option value="log">Log</option>
+                    <option value="linear">Linear</option>
+                </select>
+            </label>
+            <label>Detect
+                <select id="detect">
+                    <option value="rms">RMS</option>
+                    <option value="peak" selected>Peak</option>
+                </select>
+            </label>
+            <label>Response
+                <select id="response"></select>
+            </label>
+            <label>Tilt
+                <select id="tilt"></select>
+            </label>
+        </div>
+        <p class="note">Use the same settings in the plugin when you play the sound.</p>
+    </section>
+
+    <section class="dev">
+        <h2>Sound</h2>
+        <div class="grid">
+            <label>Letter height (dB)
+                <input id="viewDepth" type="number" step="0.5" min="3" value="7">
+            </label>
+            <label>Peak level (dBFS)
+                <input id="peakDb" type="number" step="1" max="0" value="-6">
+            </label>
+            <label>Channels
+                <select id="channels">
+                    <option value="1">Mono</option>
+                    <option value="2">Stereo copy</option>
+                </select>
+            </label>
+            <label>Black and white
+                <select id="invert">
+                    <option value="auto">Auto</option>
+                    <option value="yes">Flip</option>
+                    <option value="no">Keep</option>
+                </select>
+            </label>
+        </div>
+        <p class="note">More letter height gives taller letters and longer tails.</p>
+    </section>
+
+    <details class="dev">
+        <summary>More controls</summary>
+        <div class="grid">
+            <label>Lowest band (Hz)<input id="fmin" type="number" min="0" placeholder="auto"></label>
+            <label>Highest band (Hz)<input id="fmax" type="number" min="0" placeholder="auto"></label>
+            <label>Bands<input id="bands" type="number" min="2" step="1" placeholder="auto"></label>
+            <label>Picture rows<input id="lines" type="number" min="1" step="1" placeholder="fill the waterfall"></label>
+            <label>Rows per second<input id="pps" type="number" min="0" step="0.1" placeholder="one per line"></label>
+            <label>Tail cut (lines)<input id="tailRows" type="number" min="0" step="1" placeholder="measured"></label>
+            <label>White to silent (dB)<input id="dbRange" type="number" min="0" step="0.5" placeholder="letter height"></label>
+            <label>Black/white cut (0 = off)<input id="threshold" type="number" min="0" max="1" step="0.05" value="0.5"></label>
+            <label>Edge shave (px)<input id="shave" type="number" min="0" step="1" placeholder="auto"></label>
+            <label>Thicken strokes (px)<input id="dilate" type="number" min="0" step="1" placeholder="auto"></label>
+            <label>Soft edge (bands)<input id="soften" type="number" min="0" step="1" placeholder="auto"></label>
+            <label>Phase seed<input id="seed" type="number" step="1" value="1"></label>
+            <label>Phase tries<input id="phaseTries" type="number" min="1" step="1" value="8"></label>
+            <label class="wide">FFT order<input id="fftOrder" type="number" step="1" placeholder="what the analyser uses at this rate"></label>
+        </div>
+    </details>
+
+    <details class="dev">
+        <summary>Analyser numbers (developer)</summary>
+        <div class="grid" id="devGrid"></div>
+        <p class="note">These must equal the plugin's source. The script tag starts with the same list (ANALYSER); change it there to make it stick.</p>
+    </details>
+
+    <div class="row">
+        <button id="go" class="dev" disabled>Make the sound</button>
+        <span id="status" role="status"></span>
+    </div>
+</div>
+
+<div>
+    <section>
+        <h2>Download the sound</h2>
+        <p class="empty" id="soundEmpty">Your sound appears here once you choose a picture.</p>
+        <div id="soundBox" hidden>
+            <div class="row">
+                <button id="download">Download WAV</button>
+                <span id="soundInfo"></span>
+            </div>
+            <audio id="player" controls></audio>
+        </div>
+    </section>
+
+    <section class="dev">
+        <h2>What the waterfall will hold</h2>
+        <canvas id="check" width="1024" height="60"></canvas>
+        <p class="note">This is the sound itself, run through a copy of the analyser and the waterfall. The top line is the back of the stack. If a letter is missing here, it is not in the sound.</p>
+    </section>
+
+    <section class="dev">
+        <h2>The picture, as the bars will hold it</h2>
+        <canvas id="preview" width="1024" height="60"></canvas>
+    </section>
+
+    <section>
+        <h2>Play it in Samatas Analyzer</h2>
+        <p class="empty" id="stepsEmpty">The steps appear here with the right numbers.</p>
+        <p class="leadin">Then, in Samatas Analyzer:</p>
+        <ol id="steps" hidden></ol>
+    </section>
+
+    <section class="dev">
+        <h2>Details</h2>
+        <p class="empty" id="reportEmpty">Nothing made yet.</p>
+        <dl id="report" hidden></dl>
+    </section>
+</div>
+</main>
+
+<script>
+"use strict";
+
+// ── the analyser's numbers ───────────────────────────────────────────────
+// The plugin's source holds these. A page cannot read it, so
+// they are written here. They MUST equal the plugin's values:
+//   maxFrames            kHistoryFrames          plugins/analyzer/src/SpectrumWaterfall.h
+//   waterfallFrames      kWaterfallFrames        plugins/analyzer/src/SpectrumWaterfall.cpp
+//   waterfallIntervalSec kWaterfallIntervalSec   plugins/analyzer/src/SpectrumWaterfall.cpp
+//   barStride            kWaterfallBarStride     plugins/analyzer/src/SpectrumWaterfall.cpp
+//   bars, fftOrder, maxFftOrder, fMin, fMax, decayLn
+//                        kBars, kFftOrder, kMaxFftOrder, kFMin, kFMax,
+//                        kRtAvgDecayLn           shared/plot/SpectrumAnalyser.h
+//   subFMinHz            kSubFMinHz              plugins/analyzer/src/AnalyzerParams.h
+//   speeds               kSpeedWords + kSpeedSeconds (same file), the poles
+//   tilts                kTiltDbPerOct           (same file)
+//   smoothOct            the SMOOTH width flatten evens the level for
+//                        (1/48 oct; the Image preset itself draws Off)
+//   analysisIntervalMs   kAnalysisIntervalMs     shared/plot/SpectrumComponent.cpp
+const ANALYSER = {
+    maxFrames: 48,
+    waterfallFrames: 48,
+    waterfallIntervalSec: 0.04,
+    barStride: 3,
+    bars: 1024,
+    fftOrder: 13,
+    maxFftOrder: 15,
+    fMin: 20,
+    fMax: 20000,
+    subFMinHz: 10,
+    decayLn: -4.60517,
+    analysisIntervalMs: 16,
+    speeds: "very fast=0.25, fast=0.4, medium=1, slow=3",
+    tilts: "0, 3, 4.5",
+    smoothOct: 0.0208333,
+};
+
+// ── configuration ───────────────────────────────────────────────────────
+// Frames kept free at the back of the stack.
+const FRAME_MARGIN = 4;
+// Every tone sits exactly ON an FFT bin, this many whole bins from the next.
+const BIN_SPACING = 2;
+// The letter tops sit this far under the head of the level axis.
+const VIEW_HEADROOM_DB = 3.0;
+// The length of the test stroke the tail is measured with, in lines.
+const PROBE_ROWS = 12;
+// Every stroke is made at least this many lines long...
+const MIN_STROKE_ROWS = 4;
+// ...but never so far that fewer than this many empty lines are left.
+const MIN_GAP_ROWS = 2;
+// Empty lines kept above the picture for its first strokes to grow into.
+const GROW_ROWS = 1;
+// A bound on the work.
+const MAX_BANDS = 400;
+// Evening out the drawn level (flatten): the test's lit lines, its rounds,
+// the width in octaves each band's correction is averaged over, the edge
+// left out of the measure, and the largest move per round in dB.
+const CAL_ROWS = 10;
+const CAL_ROUNDS = 3;
+const CAL_SMOOTH_OCT = 1.0 / 6.0;
+const CAL_EDGE_OCT = 1.0 / 12.0;
+const CAL_STEP_DB = 6.0;
+// Band spacing as a share of one drawn waterfall point.
+const POINT_FILL = 0.8;
+// The width of the soft shoulder on each side of a stroke, in bands. 0 = off.
+const SOFT_EDGE_BANDS = 4;
+// Default log range. The bottom is only a floor (see chooseRange).
+const LOG_RANGE_HZ = [500.0, 16000.0];
+// The four settings the plugin's Image preset writes (the kImage indices in
+// plugins/analyzer/src/PluginEditor.cpp). A sound made for them gets the
+// Image preset step; any other gets its settings by hand.
+const IMAGE_VIEW = { axis: "logsub", detect: "peak", response: "very fast", tilt: 0.0 };
+// Default linear range: this share of the axis, centred on it.
+const LINEAR_SPAN_SHARE = 0.8;
+// Preview: pixel rows per picture row.
+const PREVIEW_ROW_PX = 6;
+// A picture larger than this is shrunk when it is loaded. The sound holds a
+// few hundred bands and a few dozen lines, so nothing is lost.
+const MAX_IMAGE_SIDE = 2048;
+
+function fail(message) {
+    throw new Error(message);
+}
+
+// ── the analyser ─────────────────────────────────────────────────────────
+function parseSpeeds(text) {
+    // "fast=0.25, medium=0.5" -> [["fast", 0.25], ["medium", 0.5]]
+    const out = [];
+    for (const part of String(text).split(",")) {
+        const pair = part.split("=");
+        if (pair.length !== 2) { continue; }
+        const name = pair[0].trim().toLowerCase();
+        const sec = Number(pair[1]);
+        if (name.length > 0 && Number.isFinite(sec) && sec > 0) {
+            out.push([name, sec]);
+        }
+    }
+    if (out.length === 0) { fail("the RESPONSE list is empty or badly written (use name=seconds, name=seconds)"); }
+    return out;
+}
+
+function parseTilts(text) {
+    const out = String(text).split(",").map((s) => Number(s.trim())).filter((v) => Number.isFinite(v));
+    if (out.length === 0) { fail("the TILT list is empty"); }
+    return out;
+}
+
+function makeAnalyser(raw) {
+    const need = (key) => {
+        const v = Number(raw[key]);
+        if (!Number.isFinite(v)) { fail(`analyser number "${key}" is not a number`); }
+        return v;
+    };
+    const maxFrames = Math.max(1, Math.round(need("maxFrames")));
+    const an = {
+        maxFrames: maxFrames,
+        // The dial can only SHORTEN the stack: paint clamps it to the array.
+        frames: Math.max(1, Math.min(maxFrames, Math.round(need("waterfallFrames")))),
+        // Floored at one 60 Hz tick, exactly as intervalMs() does.
+        intervalMs: Math.max(16, Math.round(need("waterfallIntervalSec") * 1000.0)),
+        stride: Math.max(1, Math.round(need("barStride"))),
+        bars: Math.round(need("bars")),
+        fftOrder: Math.round(need("fftOrder")),
+        maxFftOrder: Math.round(need("maxFftOrder")),
+        fMin: need("fMin"),
+        fMax: need("fMax"),
+        subFMin: need("subFMinHz"),
+        decayLn: need("decayLn"),
+        analysisMs: Math.max(1, Math.round(need("analysisIntervalMs"))),
+        speeds: parseSpeeds(raw.speeds),
+        tilts: parseTilts(raw.tilts),
+        // 0 is off: the drawn line is the bars themselves.
+        smoothOct: Math.max(0.0, need("smoothOct")),
+    };
+    if (an.bars < 8) { fail("bars is too small"); }
+    if (an.fftOrder < 8 || an.maxFftOrder > 17 || an.fftOrder > an.maxFftOrder) { fail("the FFT orders are out of range"); }
+    if (!(an.subFMin > 0 && an.fMin > 0 && an.fMax > an.fMin && an.fMax > an.subFMin)) { fail("the frequency limits are wrong"); }
+    return an;
+}
+
+function orderFor(an, sr) {
+    // orderIndexFor in SpectrumAnalyser.cpp: the FFT doubles above 60 kHz
+    // and again above 120 kHz, so the bins stay near 5.9 Hz.
+    let step = 0;
+    if (sr > 120000) { step = 2; } else if (sr > 60000) { step = 1; }
+    return Math.min(an.maxFftOrder, an.fftOrder + step);
+}
+
+function axisRange(an, axis) {
+    // Log Sub starts lower; Log and Linear start at kFMin.
+    return axis === "logsub" ? [an.subFMin, an.fMax] : [an.fMin, an.fMax];
+}
+
+function axisPos(f, axis, aLo, aHi) {
+    if (axis === "linear") { return (f - aLo) / (aHi - aLo); }
+    return Math.log(f / aLo) / Math.log(aHi / aLo);
+}
+
+// ── picture ──────────────────────────────────────────────────────────────
+// A picture here is { data: Float32Array (0..1, row by row), w, h }.
+function greyFromPixels(px, w, h) {
+    // A transparent picture is laid on the colour its visible parts are NOT,
+    // so light text on transparency stays light on dark.
+    const count = w * h;
+    let hasAlpha = false;
+    for (let i = 0; i < count; i++) {
+        if (px[(i * 4) + 3] < 255) { hasAlpha = true; break; }
+    }
+    let back = 0.0;
+    if (hasAlpha) {
+        let sum = 0.0;
+        let shown = 0;
+        for (let i = 0; i < count; i++) {
+            const o = i * 4;
+            if (px[o + 3] > 127) {
+                sum += ((0.299 * px[o]) + (0.587 * px[o + 1]) + (0.114 * px[o + 2])) / 255.0;
+                shown++;
+            }
+        }
+        const light = shown > 0 && (sum / shown) > 0.5;
+        back = light ? 0.0 : 255.0;
+    }
+    const data = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+        const o = i * 4;
+        const a = hasAlpha ? px[o + 3] / 255.0 : 1.0;
+        const r = (px[o] * a) + (back * (1.0 - a));
+        const g = (px[o + 1] * a) + (back * (1.0 - a));
+        const b = (px[o + 2] * a) + (back * (1.0 - a));
+        data[i] = ((0.299 * r) + (0.587 * g) + (0.114 * b)) / 255.0;
+    }
+    return { data: data, w: w, h: h };
+}
+
+function crop(img, x0, y0, x1, y1) {
+    const w = x1 - x0;
+    const h = y1 - y0;
+    const data = new Float32Array(w * h);
+    for (let y = 0; y < h; y++) {
+        data.set(img.data.subarray(((y + y0) * img.w) + x0, ((y + y0) * img.w) + x1), y * w);
+    }
+    return { data: data, w: w, h: h };
+}
+
+function clean(source, a) {
+    // Shave a frame, flip a light background, clean compression smudges, trim.
+    let img = source;
+    const shave = a.shave >= 0 ? a.shave : Math.max(2, Math.round(0.008 * Math.min(img.h, img.w)));
+    if ((2 * shave) >= Math.min(img.h, img.w)) { fail(`an edge shave of ${shave} px removes the whole picture`); }
+    img = crop(img, shave, shave, img.w - shave, img.h - shave);
+    const w = img.w;
+    const h = img.h;
+    const ring = [];
+    for (let x = 0; x < w; x++) { ring.push(img.data[x], img.data[((h - 1) * w) + x]); }
+    for (let y = 0; y < h; y++) { ring.push(img.data[y * w], img.data[(y * w) + (w - 1)]); }
+    ring.sort((p, q) => p - q);
+    const mid = ring.length >> 1;
+    const median = (ring.length % 2) === 1 ? ring[mid] : (ring[mid - 1] + ring[mid]) * 0.5;
+    const inverted = a.invert === "yes" || (a.invert === "auto" && median > 0.5);
+    const d = img.data;
+    if (inverted) {
+        for (let i = 0; i < d.length; i++) { d[i] = 1.0 - d[i]; }
+    }
+    if (a.threshold > 0.0) {
+        for (let i = 0; i < d.length; i++) { d[i] = d[i] >= a.threshold ? 1.0 : 0.0; }
+    }
+    let x0 = w;
+    let x1 = -1;
+    let y0 = h;
+    let y1 = -1;
+    for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+            if (d[(y * w) + x] > 0.25) {
+                if (x < x0) { x0 = x; }
+                if (x > x1) { x1 = x; }
+                if (y < y0) { y0 = y; }
+                if (y > y1) { y1 = y; }
+            }
+        }
+    }
+    if (x1 < 0) { fail("the picture is empty after preparing it (try another Black and white setting, or a Black/white cut of 0)"); }
+    return { img: crop(img, x0, y0, x1 + 1, y1 + 1), inverted: inverted, shave: shave };
+}
+
+function pad(img, margin) {
+    const w = img.w + (2 * margin);
+    const h = img.h + (2 * margin);
+    const data = new Float32Array(w * h);
+    for (let y = 0; y < img.h; y++) {
+        data.set(img.data.subarray(y * img.w, (y + 1) * img.w), ((y + margin) * w) + margin);
+    }
+    return { data: data, w: w, h: h };
+}
+
+function dilate(img, radius) {
+    // A round max filter: thickens strokes so the shrink cannot lose them.
+    // Same result as the Python loop over every (dx, dy) in the disc. Here a
+    // row-wise max of half-width hw is grown one step at a time, and each dy
+    // of the disc takes the one whose half-width it needs.
+    if (radius <= 0) { return img; }
+    const w = img.w;
+    const h = img.h;
+    const src = img.data;
+    const out = src.slice();
+    const wideRow = src.slice();
+    const byHalfWidth = [];
+    for (let k = 0; k <= radius; k++) { byHalfWidth.push([]); }
+    for (let dy = -radius; dy <= radius; dy++) {
+        byHalfWidth[Math.floor(Math.sqrt((radius * radius) - (dy * dy)))].push(dy);
+    }
+    for (let hw = 0; hw <= radius; hw++) {
+        if (hw > 0) {
+            for (let y = 0; y < h; y++) {
+                const base = y * w;
+                for (let x = 0; x < w; x++) {
+                    let v = wideRow[base + x];
+                    if (x >= hw && src[base + x - hw] > v) { v = src[base + x - hw]; }
+                    if ((x + hw) < w && src[base + x + hw] > v) { v = src[base + x + hw]; }
+                    wideRow[base + x] = v;
+                }
+            }
+        }
+        for (const dy of byHalfWidth[hw]) {
+            for (let y = 0; y < h; y++) {
+                const ys = y + dy;
+                if (ys < 0 || ys >= h) { continue; }
+                const to = y * w;
+                const from = ys * w;
+                for (let x = 0; x < w; x++) {
+                    if (wideRow[from + x] > out[to + x]) { out[to + x] = wideRow[from + x]; }
+                }
+            }
+        }
+    }
+    return { data: out, w: w, h: h };
+}
+
+function boxRows(img, rows) {
+    // Shrink in TIME only: each new row is the area average of the picture
+    // rows it covers (PIL's BOX filter).
+    const w = img.w;
+    const h = img.h;
+    const out = new Float32Array(rows * w);
+    const scale = h / rows;
+    for (let i = 0; i < rows; i++) {
+        const top = i * scale;
+        const bottom = (i + 1) * scale;
+        const first = Math.floor(top);
+        const last = Math.min(h, Math.ceil(bottom));
+        let total = 0.0;
+        for (let y = first; y < last; y++) {
+            const weight = Math.min(y + 1, bottom) - Math.max(y, top);
+            if (!(weight > 0.0)) { continue; }
+            total += weight;
+            const from = y * w;
+            const to = i * w;
+            for (let x = 0; x < w; x++) { out[to + x] += img.data[from + x] * weight; }
+        }
+        if (total > 0.0) {
+            for (let x = 0; x < w; x++) { out[(i * w) + x] = Math.min(1.0, Math.max(0.0, out[(i * w) + x] / total)); }
+        }
+    }
+    return out;
+}
+
+// A grid here is { data: Float32Array, rows, bands }, row by row.
+function lengthenRuns(grid) {
+    // Every run of lit rows in a band that is shorter than MIN_STROKE_ROWS
+    // grows towards it, one line at a time, and only EARLIER, while that
+    // leaves MIN_GAP_ROWS empty lines under the stroke above it. A stroke
+    // with no room stays short. The top of the grid is a wall.
+    const n = grid.rows;
+    const bands = grid.bands;
+    const out = grid.data.slice();
+    const lit = new Uint8Array(n);
+    for (let b = 0; b < bands; b++) {
+        for (let t = 0; t < n; t++) { lit[t] = out[(t * bands) + b] > 0.5 ? 1 : 0; }
+        let t = 0;
+        while (t < n) {
+            if (lit[t] === 0) { t++; continue; }
+            let end = t;
+            while ((end + 1) < n && lit[end + 1] === 1) { end++; }
+            let start = t;
+            while (((end - start) + 1) < MIN_STROKE_ROWS) {
+                let before = 0;
+                while ((start - before - 1) >= 0 && lit[start - before - 1] === 0) { before++; }
+                const atWall = (start - before - 1) < 0;
+                const room = atWall ? before : before - MIN_GAP_ROWS;
+                if (room <= 0) { break; }
+                start--;
+                lit[start] = 1;
+            }
+            for (let k = start; k <= end; k++) { out[(k * bands) + b] = 1.0; }
+            t = end + 1;
+        }
+    }
+    return { data: out, rows: n, bands: bands };
+}
+
+function shortenRuns(grid, rows) {
+    // For a detector that carries every lit line on for `rows` more lines:
+    // each run of lit rows in a band is cut short by that much here and
+    // grows back to its own length on the waterfall. The first row of a run
+    // always stays. The soft edge after a run goes too.
+    if (rows <= 0) { return grid; }
+    const n = grid.rows;
+    const bands = grid.bands;
+    const src = grid.data;
+    const out = src.slice();
+    for (let b = 0; b < bands; b++) {
+        let t = 0;
+        while (t < n) {
+            if (!(src[(t * bands) + b] > 0.5)) { t++; continue; }
+            let end = t;
+            while ((end + 1) < n && src[((end + 1) * bands) + b] > 0.5) { end++; }
+            const keepTo = Math.max(t, end - rows);
+            for (let k = keepTo + 1; k <= end; k++) { out[(k * bands) + b] = 0.0; }
+            const tail = Math.min(n, end + 1 + rows);
+            for (let k = end + 1; k < tail; k++) {
+                if (!(src[(k * bands) + b] > 0.5)) { out[(k * bands) + b] = 0.0; }
+            }
+            t = end + 1;
+        }
+    }
+    return { data: out, rows: n, bands: bands };
+}
+
+function softenEdges(grid, radius) {
+    // A soft shoulder on each side of every stroke, ACROSS the bands only.
+    // Each cell takes the highest of its neighbours within `radius` bands,
+    // each lowered by a raised cosine of its distance. A cell's own value has
+    // weight 1, so flat tops and one-band peaks keep their full height; only
+    // the cliffs beside them become slopes. Time is left alone: the tail
+    // rules above have already shaped every stroke's length.
+    // Written as !(> 0), so a missing or non-number radius is also "off".
+    if (!(radius > 0)) { return grid; }
+    const n = grid.rows;
+    const bands = grid.bands;
+    const src = grid.data;
+    const out = src.slice();
+    const weight = new Float64Array(radius + 1);
+    for (let d = 0; d <= radius; d++) {
+        weight[d] = 0.5 + (0.5 * Math.cos((Math.PI * d) / (radius + 1)));
+    }
+    for (let r = 0; r < n; r++) {
+        const row = r * bands;
+        for (let b = 0; b < bands; b++) {
+            let v = src[row + b];
+            for (let d = 1; d <= radius; d++) {
+                if ((b - d) >= 0) { v = Math.max(v, src[row + b - d] * weight[d]); }
+                if ((b + d) < bands) { v = Math.max(v, src[row + b + d] * weight[d]); }
+            }
+            out[row + b] = v;
+        }
+    }
+    return { data: out, rows: n, bands: bands };
+}
+
+function toGrid(img, freqs, axis, lines, radius, holdRows, softBands) {
+    // Margin first, so thickening near an edge has room. The picture is
+    // shrunk in TIME only; then each band takes the average of the picture
+    // across its own share of the axis. Rows = time, columns = bands.
+    const margin = Math.max(radius + 1, Math.round(0.015 * Math.max(img.w, img.h)));
+    const thick = dilate(pad(img, margin), radius);
+    const width = thick.w;
+    const bands = freqs.length;
+    // GROW_ROWS empty lines above the picture, inside `lines`.
+    const inner = Math.max(1, lines - GROW_ROWS);
+    const rows = boxRows(thick, inner);
+    const offset = lines - inner;
+    const fLo = freqs[0];
+    const fHi = freqs[bands - 1];
+    const edges = new Float64Array(bands + 1);
+    edges[0] = axisPos(freqs[0], axis, fLo, fHi) * width;
+    edges[bands] = axisPos(freqs[bands - 1], axis, fLo, fHi) * width;
+    for (let b = 1; b < bands; b++) {
+        edges[b] = (axisPos(freqs[b - 1], axis, fLo, fHi) + axisPos(freqs[b], axis, fLo, fHi)) * 0.5 * width;
+    }
+    const data = new Float32Array(lines * bands);
+    for (let b = 0; b < bands; b++) {
+        const left = Math.min(Math.floor(edges[b]), width - 1);
+        const right = Math.min(width, Math.max(left + 1, Math.ceil(edges[b + 1])));
+        for (let r = 0; r < inner; r++) {
+            let sum = 0.0;
+            for (let x = left; x < right; x++) { sum += rows[(r * width) + x]; }
+            data[((r + offset) * bands) + b] = sum / (right - left);
+        }
+    }
+    const shaped = softenEdges(
+        shortenRuns(lengthenRuns({ data: data, rows: lines, bands: bands }), holdRows), softBands);
+    // One silent row at each end: every band starts and ends at nothing.
+    const padded = new Float32Array((lines + 2) * bands);
+    padded.set(shaped.data, bands);
+    return { data: padded, rows: lines + 2, bands: bands };
+}
+
+// ── sound ────────────────────────────────────────────────────────────────
+function bandFreqs(axis, fLo, fHi, bands) {
+    const out = new Float64Array(bands);
+    for (let i = 0; i < bands; i++) {
+        const k = i / (bands - 1);
+        out[i] = axis === "linear" ? fLo + ((fHi - fLo) * k) : fLo * Math.pow(fHi / fLo, k);
+    }
+    return out;
+}
+
+function makeRandom(seed) {
+    // mulberry32. NumPy's generator is not available here, so the random
+    // phase sets differ from the Python script's; the rule is the same.
+    let state = seed >>> 0;
+    return () => {
+        state = (state + 0x6D2B79F5) >>> 0;
+        let t = state;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296.0;
+    };
+}
+
+function synthesise(grid, freqs, pps, sr, seed, dbRange, gains, tries) {
+    // gains: a linear gain per band.
+    // Returns the sound, which start phases won, and its crest factor in dB.
+    const lines = grid.rows;
+    const bands = grid.bands;
+    const n = Math.ceil((lines / pps) * sr);
+    // Brightness 1 is the band's full level, 0 is silence, and between them
+    // the level falls linearly in dB down to the floor of the view.
+    const amp = new Float64Array(lines * bands);
+    const active = [];
+    for (let b = 0; b < bands; b++) {
+        let any = false;
+        for (let r = 0; r < lines; r++) {
+            const g = grid.data[(r * bands) + b];
+            const v = g > 0.0 ? Math.pow(10.0, ((g - 1.0) * dbRange) / 20.0) * gains[b] : 0.0;
+            amp[(r * bands) + b] = v;
+            any = any || v > 0.0;
+        }
+        if (any) { active.push(b); }
+    }
+    if (active.length === 0) {
+        return { samples: new Float64Array(n), label: "none", crest: 0.0 };
+    }
+
+    // One sine per band, its level a straight line between row centres. The
+    // sine is turned sample by sample (two multiplies) and started from its
+    // exact angle at every row, so nothing drifts.
+    const render = (phases) => {
+        const out = new Float64Array(n);
+        for (let i = 0; i < active.length; i++) {
+            const b = active[i];
+            const w = (2.0 * Math.PI * freqs[b]) / sr;
+            const cw = Math.cos(w);
+            const sw = Math.sin(w);
+            for (let r = 0; (r + 1) < lines; r++) {
+                const a0 = amp[(r * bands) + b];
+                const a1 = amp[((r + 1) * bands) + b];
+                if (a0 === 0.0 && a1 === 0.0) { continue; }
+                const c0 = (r + 0.5) / pps;
+                const c1 = (r + 1.5) / pps;
+                const s0 = Math.ceil(c0 * sr);
+                const s1 = Math.min(n, Math.ceil(c1 * sr));
+                const slope = (a1 - a0) / ((c1 - c0) * sr);
+                let env = a0 + ((a1 - a0) * (((s0 / sr) - c0) / (c1 - c0)));
+                const angle = (w * s0) + phases[i];
+                let sn = Math.sin(angle);
+                let cs = Math.cos(angle);
+                for (let s = s0; s < s1; s++) {
+                    out[s] += env * sn;
+                    env += slope;
+                    const next = (sn * cw) + (cs * sw);
+                    cs = (cs * cw) - (sn * sw);
+                    sn = next;
+                }
+            }
+        }
+        return out;
+    };
+
+    // The start phases decide how high the tones pile up. Several sets are
+    // tried and the flattest kept: first Schroeder's, then random ones.
+    const count = active.length;
+    const candidates = [];
+    const schroeder = new Float64Array(count);
+    for (let i = 0; i < count; i++) { schroeder[i] = (-Math.PI * i * i) / count; }
+    candidates.push(["schroeder", schroeder]);
+    for (let k = 0; k < Math.max(0, tries - 1); k++) {
+        const random = makeRandom(seed + k);
+        const phases = new Float64Array(count);
+        for (let i = 0; i < count; i++) { phases[i] = random() * 2.0 * Math.PI; }
+        candidates.push([`random seed ${seed + k}`, phases]);
+    }
+    let best = null;
+    let bestLabel = "none";
+    let bestPeak = Infinity;
+    for (const [label, phases] of candidates) {
+        const out = render(phases);
+        let peak = 0.0;
+        for (let s = 0; s < n; s++) {
+            const v = Math.abs(out[s]);
+            if (v > peak) { peak = v; }
+        }
+        if (peak < bestPeak) {
+            best = out;
+            bestLabel = label;
+            bestPeak = peak;
+        }
+    }
+    let sumSq = 0.0;
+    for (let s = 0; s < n; s++) { sumSq += best[s] * best[s]; }
+    const rms = Math.sqrt(sumSq / n);
+    const crest = rms > 0.0 ? 20.0 * Math.log10(bestPeak / rms) : 0.0;
+    return { samples: best, label: bestLabel, crest: crest };
+}
+
+function wavBlob(samples, sr, channels) {
+    // 24-bit PCM: the quiet letter edges sit far above the quantisation floor.
+    const dataBytes = samples.length * channels * 3;
+    const padByte = dataBytes % 2;
+    const buffer = new ArrayBuffer(44 + dataBytes + padByte);
+    const view = new DataView(buffer);
+    const bytes = new Uint8Array(buffer);
+    const text = (at, s) => { for (let i = 0; i < s.length; i++) { bytes[at + i] = s.charCodeAt(i); } };
+    text(0, "RIFF");
+    view.setUint32(4, 36 + dataBytes + padByte, true);
+    text(8, "WAVE");
+    text(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, channels, true);
+    view.setUint32(24, sr, true);
+    view.setUint32(28, sr * channels * 3, true);
+    view.setUint16(32, channels * 3, true);
+    view.setUint16(34, 24, true);
+    text(36, "data");
+    view.setUint32(40, dataBytes, true);
+    let o = 44;
+    for (let i = 0; i < samples.length; i++) {
+        const v = Math.max(-8388608, Math.min(8388607, Math.round(samples[i] * 8388607.0)));
+        for (let c = 0; c < channels; c++) {
+            bytes[o] = v & 255;
+            bytes[o + 1] = (v >> 8) & 255;
+            bytes[o + 2] = (v >> 16) & 255;
+            o += 3;
+        }
+    }
+    return new Blob([buffer], { type: "audio/wav" });
+}
+
+// ── the model of the analyser and the waterfall ──────────────────────────
+function makeFft(n) {
+    const cosT = new Float64Array(n >> 1);
+    const sinT = new Float64Array(n >> 1);
+    for (let i = 0; i < (n >> 1); i++) {
+        cosT[i] = Math.cos((2.0 * Math.PI * i) / n);
+        sinT[i] = Math.sin((2.0 * Math.PI * i) / n);
+    }
+    const rev = new Uint32Array(n);
+    let bits = 0;
+    while ((1 << bits) < n) { bits++; }
+    for (let i = 0; i < n; i++) {
+        let r = 0;
+        for (let b = 0; b < bits; b++) { r |= ((i >>> b) & 1) << (bits - 1 - b); }
+        rev[i] = r >>> 0;
+    }
+    return (re, im) => {
+        for (let i = 0; i < n; i++) {
+            const j = rev[i];
+            if (j > i) {
+                const tr = re[i]; re[i] = re[j]; re[j] = tr;
+                const ti = im[i]; im[i] = im[j]; im[j] = ti;
+            }
+        }
+        for (let size = 2; size <= n; size *= 2) {
+            const half = size >> 1;
+            const step = n / size;
+            for (let i = 0; i < n; i += size) {
+                for (let j = 0; j < half; j++) {
+                    const k = j * step;
+                    const a = i + j;
+                    const b = a + half;
+                    const tr = (re[b] * cosT[k]) + (im[b] * sinT[k]);
+                    const ti = (im[b] * cosT[k]) - (re[b] * sinT[k]);
+                    re[b] = re[a] - tr;
+                    im[b] = im[a] - ti;
+                    re[a] += tr;
+                    im[a] += ti;
+                }
+            }
+        }
+    };
+}
+
+// kLobeSlack in SpectrumAnalyser.cpp.
+const LOBE_SLACK = 2.0;
+
+function hannLobe(d) {
+    // The Hann window's main lobe, d bins from its centre (hannLobe).
+    const a = Math.min(Math.abs(d), 1.5);
+    if (a < 1.0e-3) { return 1.0; }
+    if (Math.abs(a - 1.0) < 1.0e-3) { return 0.5; }
+    const x = Math.PI * a;
+    return Math.sin(x) / (x * (1.0 - (a * a)));
+}
+
+function monotoneTangent(slopeBefore, slopeAfter) {
+    if (!((slopeBefore * slopeAfter) > 0.0)) { return 0.0; }
+    return (2.0 * slopeBefore * slopeAfter) / (slopeBefore + slopeAfter);
+}
+
+function hermiteUnit(y0, y1, m0, m1, t) {
+    const t2 = t * t;
+    const t3 = t2 * t;
+    return ((((2.0 * t3) - (3.0 * t2)) + 1.0) * y0)
+        + (((t3 - (2.0 * t2)) + t) * m0)
+        + (((3.0 * t2) - (2.0 * t3)) * y1)
+        + ((t3 - t2) * m1);
+}
+
+function findPeaks(avg, kTop, found, centre, power) {
+    // SpectrumAnalyser::peakAt for every bin at once: a bin that is a local
+    // maximum and passes the one-tone gate holds a peak, placed between bins
+    // by the Hann ratio and lifted to the level a bin exactly there would hold.
+    found.fill(0);
+    for (let k = 1; k <= kTop; k++) {
+        const p = avg[k];
+        const left = avg[k - 1];
+        const right = k < kTop ? avg[k + 1] : 0.0;
+        if (!(p > 0.0) || !(p >= left) || !(p > right)) { continue; }
+        const r = Math.sqrt(Math.max(left, right) / p);
+        const delta = Math.min(0.5, Math.max(0.0, ((2.0 * r) - 1.0) / (r + 1.0)));
+        const farAmp = (1.0 - delta) / (2.0 + delta);
+        if (!(Math.min(left, right) <= (p * farAmp * farAmp * LOBE_SLACK))) { continue; }
+        const lobe = hannLobe(delta);
+        centre[k] = right > left ? k + delta : k - delta;
+        power[k] = p / (lobe * lobe);
+        found[k] = 1;
+    }
+}
+
+function powerAt(avg, pos, kTop, found, centre) {
+    // SpectrumAnalyser::powerAt: the curve between two bins. Beside a peak it
+    // is the window's lobe; elsewhere a monotone cubic in dB.
+    const x = Math.min(Math.max(pos, 1.0), kTop);
+    const k0 = Math.min(Math.max(Math.trunc(x), 1), kTop - 1);
+    const t = Math.min(Math.max(x - k0, 0.0), 1.0);
+    const a = avg[k0];
+    const b = avg[k0 + 1];
+    if (!(a > 0.0) || !(b > 0.0)) {
+        return a + (t * (b - a));
+    }
+    const la = Math.log(a);
+    const lb = Math.log(b);
+    let peakBin = -1;
+    if (found[k0] === 1) {
+        peakBin = k0;
+    } else if (found[k0 + 1] === 1) {
+        peakBin = k0 + 1;
+    }
+    if (peakBin < 0) {
+        const chordSlope = lb - la;
+        let m0 = chordSlope;
+        let m1 = chordSlope;
+        if (k0 >= 2 && avg[k0 - 1] > 0.0) {
+            m0 = monotoneTangent(la - Math.log(avg[k0 - 1]), chordSlope);
+        }
+        if ((k0 + 2) <= kTop && avg[k0 + 2] > 0.0) {
+            m1 = monotoneTangent(chordSlope, Math.log(avg[k0 + 2]) - lb);
+        }
+        return Math.exp(hermiteUnit(la, lb, m0, m1, t));
+    }
+    const chord = Math.exp(((1.0 - t) * la) + (t * lb));
+    const w0 = hannLobe(k0 - centre[peakBin]);
+    const w1 = hannLobe((k0 + 1) - centre[peakBin]);
+    const wx = hannLobe(x - centre[peakBin]);
+    const ratio = wx / (w0 * Math.pow(w1 / w0, t));
+    return chord * ratio * ratio;
+}
+
+function bandPeak(avg, loPos, hiPos, kTop, found, centre, power) {
+    // SpectrumAnalyser::bandPeak: the loudest bin and the loudest peak inside
+    // the bar, looking one bin past its top edge.
+    const kFirst = Math.trunc(Math.min(Math.max(loPos, 1.0), kTop));
+    const kLast = Math.min(Math.trunc(Math.min(Math.max(hiPos, 1.0), kTop)) + 1, kTop);
+    let best = 0.0;
+    for (let k = kFirst; k <= kLast; k++) {
+        if (k >= loPos && k <= hiPos && avg[k] > best) { best = avg[k]; }
+        if (found[k] === 1 && centre[k] >= loPos && centre[k] <= hiPos && power[k] > best) {
+            best = power[k];
+        }
+    }
+    return best;
+}
+
+function smoothLine(src, dst, weight, reach) {
+    // SpectrumAnalyser::smoothHold without the keep rule, as the Analyzer
+    // draws: weighed again at the ends, so the edge bars keep their level.
+    const n = src.length;
+    if (reach <= 0) {
+        dst.set(src);
+        return;
+    }
+    for (let b = 0; b < n; b++) {
+        const lo = Math.max(0, b - reach);
+        const hi = Math.min(n - 1, b + reach);
+        let sum = 0.0;
+        let weightSum = 0.0;
+        for (let i = lo; i <= hi; i++) {
+            const w = weight[Math.abs(i - b)];
+            sum += w * src[i];
+            weightSum += w;
+        }
+        dst[b] = sum / weightSum;
+    }
+}
+
+function simulate(samples, sr, order, an, axis, aLo, aHi, peakDetect, avgSec, tilt, floorDb, headDb) {
+    // What the waterfall will hold, one row per captured line, 0..1 of the
+    // level axis floorDb..headDb. It follows the plugin function by function:
+    //   transformToPower  the windowed mean comes off, then a periodic-Hann
+    //                     FFT of the last window, on every analysis tick
+    //   integrateBins     the RESPONSE pole on bin power, with Peak's instant
+    //                     rise
+    //   mapBands          each bar is the highest point of the curve across
+    //                     its width: its two edges (powerAt), the bins inside
+    //                     it and the peaks inside it (bandPeak), times the tilt
+    //   toDisplay         power to dB to 0..1
+    //   SpectrumWaterfall the timer takes the latest frame every line
+    //                     interval, and buildContour draws the loudest bar of
+    //                     each stride group
+    // The bars are ALWAYS logarithmic (rebuildBarTables); a linear FREQ axis
+    // only draws them at other places, so for it the columns are moved last.
+    const n = 1 << order;
+    const half = n >> 1;
+    const kTop = half - 1;
+    const binHz = sr / n;
+    const bars = an.bars;
+    const ratio = aHi / aLo;
+    const edgePos = new Float64Array(bars + 1);
+    const gain = new Float64Array(bars);
+    edgePos[0] = aLo / binHz;
+    for (let b = 0; b < bars; b++) {
+        const lo = aLo * Math.pow(ratio, b / bars);
+        const hi = aLo * Math.pow(ratio, (b + 1) / bars);
+        edgePos[b + 1] = hi / binHz;
+        // The tilt is read at the bar's geometric centre, around 1 kHz.
+        const gainDb = tilt * Math.log2(Math.max(1.0e-3, Math.sqrt(lo * hi)) / 1000.0);
+        gain[b] = Math.pow(10.0, gainDb * 0.1);
+    }
+
+    const win = new Float64Array(n);
+    let winSum = 0.0;
+    for (let i = 0; i < n; i++) {
+        win[i] = 0.5 - (0.5 * Math.cos((2.0 * Math.PI * i) / n));
+        winSum += win[i];
+    }
+    const norm = 4.0 / (winSum * winSum);
+    const span = Math.max(1.0e-3, headDb - floorDb);
+    // SMOOTH, as smoothHold draws it: a Gaussian on untilted power whose
+    // width at half height is smoothOct, cut at 3 sigma (kSmoothSigmas),
+    // never past 160 bars (kSmoothMaxReach).
+    const halfBars = 0.5 * an.smoothOct * (bars / Math.log2(ratio));
+    let reach = 0;
+    const weight = new Float64Array(161);
+    if (halfBars > 0.5) {
+        const sigma = (2.0 * halfBars) / 2.3548;
+        reach = Math.min(160, Math.max(1, Math.ceil(3.0 * sigma)));
+        for (let k = 0; k <= reach; k++) {
+            const u = k / sigma;
+            weight[k] = Math.exp(-0.5 * u * u);
+        }
+    }
+    const linePow = new Float64Array(bars);
+    const drawnPow = new Float64Array(bars);
+    const tick = an.analysisMs / 1000.0;
+    const hop = an.intervalMs / 1000.0;
+    // Past the end: until the window has emptied and the fall has crossed
+    // the whole view, plus two lines.
+    const fallSec = (span / 20.0) * avgSec;
+    const total = (samples.length / sr) + (n / sr) + fallSec + (2.0 * hop);
+    const frames = Math.ceil(total / hop);
+    const pole = Math.exp((an.decayLn * tick) / Math.max(0.01, avgSec));
+    const fft = makeFft(n);
+    const re = new Float64Array(n);
+    const im = new Float64Array(n);
+    const avg = new Float64Array(half);
+    const found = new Uint8Array(half);
+    const centre = new Float64Array(half);
+    const power = new Float64Array(half);
+    const held = new Float32Array(frames * bars);
+    let ticksDone = 0;
+    for (let j = 0; j < frames; j++) {
+        // Every analysis tick up to this capture; the capture takes the last.
+        while ((ticksDone * tick) <= (j * hop)) {
+            const endAt = Math.round(ticksDone * tick * sr);
+            const startAt = endAt - n;
+            const silent = endAt <= 0 || startAt >= samples.length;
+            if (silent) {
+                for (let k = 0; k < half; k++) { avg[k] *= pole; }
+            } else {
+                let weighted = 0.0;
+                for (let i = 0; i < n; i++) {
+                    const at = startAt + i;
+                    re[i] = (at >= 0 && at < samples.length) ? samples[at] : 0.0;
+                    weighted += re[i] * win[i];
+                }
+                const dc = weighted / winSum;
+                for (let i = 0; i < n; i++) {
+                    re[i] = (re[i] - dc) * win[i];
+                    im[i] = 0.0;
+                }
+                fft(re, im);
+                for (let k = 0; k < half; k++) {
+                    const p = (re[k] * re[k]) + (im[k] * im[k]);
+                    if (peakDetect) {
+                        avg[k] = Math.max(p, avg[k] * pole);
+                    } else {
+                        avg[k] = (avg[k] * pole) + (p * (1.0 - pole));
+                    }
+                }
+            }
+            ticksDone++;
+        }
+        // mapBands and toDisplay, on the frame the waterfall takes.
+        findPeaks(avg, kTop, found, centre, power);
+        const row = j * bars;
+        let loPos = edgePos[0];
+        let loPow = powerAt(avg, loPos, kTop, found, centre);
+        for (let b = 0; b < bars; b++) {
+            const hiPos = edgePos[b + 1];
+            const hiPow = powerAt(avg, hiPos, kTop, found, centre);
+            linePow[b] = Math.max(loPow, hiPow, bandPeak(avg, loPos, hiPos, kTop, found, centre, power));
+            loPos = hiPos;
+            loPow = hiPow;
+        }
+        // The waterfall draws the smoothed copy; the tilt goes on after it.
+        smoothLine(linePow, drawnPow, weight, reach);
+        for (let b = 0; b < bars; b++) {
+            const db = 20.0 * Math.log10(Math.sqrt(drawnPow[b] * norm * gain[b]) + 1.0e-6);
+            held[row + b] = Math.min(1.0, Math.max(0.0, (db - floorDb) / span));
+        }
+        for (let g = 0; g < bars; g += an.stride) {
+            const stop = Math.min(bars, g + an.stride);
+            let top = 0.0;
+            for (let b = g; b < stop; b++) { if (held[row + b] > top) { top = held[row + b]; } }
+            for (let b = g; b < stop; b++) { held[row + b] = top; }
+        }
+    }
+    if (axis === "linear") {
+        const moved = new Float32Array(frames * bars);
+        for (let b = 0; b < bars; b++) {
+            const hz = aLo + ((aHi - aLo) * ((b + 0.5) / bars));
+            const column = Math.min(bars - 1, Math.max(0, Math.floor((Math.log(hz / aLo) / Math.log(ratio)) * bars)));
+            for (let j = 0; j < frames; j++) { moved[(j * bars) + b] = held[(j * bars) + column]; }
+        }
+        return { data: moved, rows: frames, cols: bars };
+    }
+    return { data: held, rows: frames, cols: bars };
+}
+
+function probe(sr, order, an, aLo, aHi, peakDetect, avgSec, depth, probeHz, pps) {
+    // The tail, MEASURED rather than worked out. One on-bin tone, PROBE_ROWS
+    // lines long, goes through the same synthesis and the same model the
+    // check uses, and is counted where it stands above half the letter
+    // height; the lines over PROBE_ROWS are the tail.
+    const binHz = sr / (1 << order);
+    const freqs = new Float64Array([Math.max(1.0, Math.round(probeHz / binHz)) * binHz]);
+    const floorDb = -(depth + 6.0);
+    const span = VIEW_HEADROOM_DB - floorDb;
+    const data = new Float32Array(PROBE_ROWS + 2);
+    data.fill(1.0, 1, PROBE_ROWS + 1);
+    const grid = { data: data, rows: PROBE_ROWS + 2, bands: 1 };
+    const burst = synthesise(grid, freqs, pps, sr, 0, depth, new Float64Array([1.0]), 1).samples;
+    const held = simulate(burst, sr, order, an, "log", aLo, aHi, peakDetect, avgSec, 0.0, floorDb, VIEW_HEADROOM_DB);
+    let bestColumn = 0;
+    let bestSum = -1.0;
+    for (let b = 0; b < held.cols; b++) {
+        let sum = 0.0;
+        for (let j = 0; j < held.rows; j++) { sum += held.data[(j * held.cols) + b]; }
+        if (sum > bestSum) { bestSum = sum; bestColumn = b; }
+    }
+    let top = -Infinity;
+    for (let j = 0; j < held.rows; j++) {
+        top = Math.max(top, floorDb + (held.data[(j * held.cols) + bestColumn] * span));
+    }
+    let count = 0;
+    for (let j = 0; j < held.rows; j++) {
+        if ((floorDb + (held.data[(j * held.cols) + bestColumn] * span)) > (top - (0.5 * depth))) { count++; }
+    }
+    return Math.max(0, count - PROBE_ROWS);
+}
+
+function previewStrip(grid, freqs, axis, aLo, aHi, width) {
+    // The full plot width, one pixel per bar; the top row is the back of the
+    // stack.
+    const data = new Float32Array(grid.rows * width);
+    const bands = grid.bands;
+    const x = new Float64Array(bands);
+    for (let b = 0; b < bands; b++) { x[b] = axisPos(freqs[b], axis, aLo, aHi) * width; }
+    for (let b = 0; b < bands; b++) {
+        const leftEdge = b === 0 ? x[0] - 0.5 : (x[b - 1] + x[b]) * 0.5;
+        const rightEdge = b === (bands - 1) ? x[b] + 0.5 : (x[b] + x[b + 1]) * 0.5;
+        const left = Math.max(0, Math.floor(leftEdge));
+        const right = Math.min(width, Math.max(left + 1, Math.ceil(rightEdge)));
+        for (let r = 0; r < grid.rows; r++) {
+            const v = grid.data[(r * bands) + b];
+            for (let c = left; c < right; c++) {
+                if (v > data[(r * width) + c]) { data[(r * width) + c] = v; }
+            }
+        }
+    }
+    return { data: data, rows: grid.rows, cols: width };
+}
+
+// ── choosing the range and the bands ─────────────────────────────────────
+function chooseRange(a, aLo, aHi, sr, flatHz) {
+    // flatHz: the lowest frequency where a bar is one FFT bin wide.
+    let defaultLo = 0.0;
+    let defaultHi = 0.0;
+    if (a.axis === "linear") {
+        const centre = (aLo + aHi) * 0.5;
+        const half = (aHi - aLo) * LINEAR_SPAN_SHARE * 0.5;
+        defaultLo = Math.max(flatHz, centre - half);
+        defaultHi = centre + half;
+    } else {
+        defaultLo = Math.max(flatHz, LOG_RANGE_HZ[0]);
+        defaultHi = LOG_RANGE_HZ[1];
+    }
+    const fLo = a.fmin > 0.0 ? a.fmin : defaultLo;
+    const fHi = a.fmax > 0.0 ? a.fmax : defaultHi;
+    if (!(fLo < fHi)) { fail(`the lowest band (${fLo} Hz) must be below the highest (${fHi} Hz)`); }
+    if (fLo < aLo || fHi > aHi) { fail(`${fLo}..${fHi} Hz is outside the ${a.axis} axis (${aLo}..${aHi} Hz)`); }
+    if (fHi >= (0.45 * sr)) { fail(`the highest band (${fHi} Hz) is too close to half the sample rate (${Math.floor(sr / 2)} Hz)`); }
+    return [fLo, fHi];
+}
+
+function chooseFreqs(a, an, fLo, fHi, binHz, aLo, aHi) {
+    // Every band is a whole FFT bin number, so every tone is on-bin. A band
+    // count spreads that many along the axis and then moves each to its
+    // nearest bin. Otherwise each step up is the larger of two limits:
+    // BIN_SPACING bins, which rules the low end, and POINT_FILL of one drawn
+    // waterfall point, which rules the rest.
+    const kFirst = Math.max(1, Math.round(fLo / binHz));
+    const kLast = Math.round(fHi / binHz);
+    if ((kLast - kFirst) < BIN_SPACING) { fail(`${fLo}..${fHi} Hz is too narrow for two bands`); }
+    let bins = [];
+    if (a.bands > 0) {
+        if (a.bands < 2) { fail("there must be at least 2 bands"); }
+        const wanted = bandFreqs(a.axis, fLo, fHi, a.bands);
+        bins = [Math.round(wanted[0] / binHz)];
+        for (let i = 1; i < wanted.length; i++) {
+            const k = Math.round(wanted[i] / binHz);
+            if ((k - bins[bins.length - 1]) >= BIN_SPACING) { bins.push(k); }
+        }
+    } else {
+        const barsPerOctave = an.bars / Math.log2(aHi / aLo);
+        const pointRatio = POINT_FILL * (Math.pow(2.0, an.stride / barsPerOctave) - 1.0);
+        let scale = 1.0;
+        for (;;) {
+            bins = [kFirst];
+            for (;;) {
+                const k = bins[bins.length - 1];
+                const step = Math.max(BIN_SPACING, Math.floor(scale * k * pointRatio));
+                if ((k + step) > kLast) { break; }
+                bins.push(k + step);
+            }
+            if (bins.length <= MAX_BANDS) { break; }
+            scale *= bins.length / MAX_BANDS;
+        }
+        // The top band lands ON the last bin: added when there is room for
+        // it, otherwise the last band moves up to it.
+        if ((kLast - bins[bins.length - 1]) >= BIN_SPACING) {
+            bins.push(kLast);
+        } else {
+            bins[bins.length - 1] = kLast;
+        }
+    }
+    if (bins.length < 2) { fail("fewer than two bands fit; widen the range"); }
+    return Float64Array.from(bins, (k) => k * binHz);
+}
+
+function flatten(gains, freqs, sr, order, an, axis, aLo, aHi, peakDetect, avgSec, tilt, pps, depth) {
+    // The drawn line is smoothed, and sparse tones smooth to less than dense
+    // ones, so the high bands drew a few dB under the low ones. A steady test
+    // with every band on goes through the model; each band's gain moves by
+    // what its drawn level misses, averaged over nearby bands. The first
+    // round's middle level is the aim, so the Image preset's dB window fits.
+    const bands = freqs.length;
+    const rows = CAL_ROWS + 2;
+    const data = new Float32Array(rows * bands);
+    data.fill(1.0, bands, (CAL_ROWS + 1) * bands);
+    const grid = { data: data, rows: rows, bands: bands };
+    const column = Int32Array.from(freqs, (f) =>
+        Math.min(an.bars - 1, Math.max(0, Math.floor(axisPos(f, axis, aLo, aHi) * an.bars))));
+    const octs = Float64Array.from(freqs, (f) => Math.log2(f / freqs[0]));
+    const top = octs[bands - 1];
+    const inner = [];
+    for (let b = 0; b < bands; b++) {
+        if (octs[b] >= CAL_EDGE_OCT && octs[b] <= (top - CAL_EDGE_OCT)) { inner.push(b); }
+    }
+    if (inner.length < 2) { return; }
+    const first = inner[0];
+    const last = inner[inner.length - 1];
+    const floorDb = -60.0;
+    const headDb = 20.0;
+    const span = headDb - floorDb;
+    const drawn = new Float64Array(bands);
+    const miss = new Float64Array(bands);
+    let aim = 0.0;
+    for (let round = 0; round < CAL_ROUNDS; round++) {
+        const sound = synthesise(grid, freqs, pps, sr, 0, depth, gains, 1).samples;
+        const held = simulate(sound, sr, order, an, axis, aLo, aHi, peakDetect, avgSec, tilt, floorDb, headDb);
+        for (let b = 0; b < bands; b++) {
+            let best = 0.0;
+            for (let j = 0; j < held.rows; j++) { best = Math.max(best, held.data[(j * held.cols) + column[b]]); }
+            drawn[b] = floorDb + (best * span);
+        }
+        if (round === 0) {
+            const sorted = inner.map((b) => drawn[b]).sort((p, q) => p - q);
+            aim = sorted[sorted.length >> 1];
+        }
+        // The edge bands take the nearest inner band's miss: silence past the
+        // range pulls their smoothed level down, a picture's own edge does not.
+        for (let b = 0; b < bands; b++) {
+            miss[b] = aim - drawn[Math.min(Math.max(b, first), last)];
+        }
+        for (let b = 0; b < bands; b++) {
+            let sum = 0.0;
+            let count = 0;
+            for (let j = 0; j < bands; j++) {
+                if (Math.abs(octs[j] - octs[b]) <= (0.5 * CAL_SMOOTH_OCT)) {
+                    sum += miss[j];
+                    count++;
+                }
+            }
+            const moveDb = Math.min(CAL_STEP_DB, Math.max(-CAL_STEP_DB, sum / count));
+            gains[b] *= Math.pow(10.0, moveDb / 20.0);
+        }
+    }
+}
+
+// ── the whole job ────────────────────────────────────────────────────────
+function run(source, a, an) {
+    const sr = a.sampleRate;
+    const order = a.fftOrder > 0 ? a.fftOrder : orderFor(an, sr);
+    if (!(order >= an.fftOrder && order <= an.maxFftOrder)) { fail(`the FFT order must be ${an.fftOrder}..${an.maxFftOrder}`); }
+    const speed = an.speeds.find((s) => s[0] === a.response);
+    if (speed === undefined) { fail(`RESPONSE must be one of: ${an.speeds.map((s) => s[0]).join(", ")}`); }
+    const avgSec = speed[1];
+    const depth = a.viewDepth;
+    if (!(depth >= 3.0)) { fail("the letter height must be at least 3 dB"); }
+    const peakDetect = a.detect === "peak";
+    const binHz = sr / (1 << order);
+    const [aLo, aHi] = axisRange(an, a.axis);
+    // A bar is f * ln(aHi / aLo) / bars wide; one bin wide from here up.
+    const flatHz = Math.ceil((binHz * an.bars) / Math.log(aHi / aLo));
+    const [fLo, fHi] = chooseRange(a, aLo, aHi, sr, flatHz);
+    const pps = a.pps > 0.0 ? a.pps : 1000.0 / an.intervalMs;
+    // Every stroke draws `tail` lines longer than it sounds.
+    let tail = a.tailRows;
+    if (tail < 0) {
+        tail = probe(sr, order, an, aLo, aHi, peakDetect, avgSec, depth, Math.sqrt(fLo * fHi), pps);
+    }
+
+    const cleaned = clean(source, a);
+    const img = cleaned.img;
+    const freqs = chooseFreqs(a, an, fLo, fHi, binHz, aLo, aHi);
+    const bands = freqs.length;
+    // The picture, its two silent rows and the last stroke's tail must fit.
+    const room = an.frames - FRAME_MARGIN - 2 - tail;
+    if (room < 1) {
+        fail(`a tail of ${tail} lines leaves no room in a ${an.frames}-line waterfall; use a faster RESPONSE or a smaller letter height`);
+    }
+    const lines = a.lines > 0 ? a.lines : Math.max(1, Math.min(room, img.h));
+    let radius = a.dilate;
+    if (radius < 0) {
+        const shrink = Math.max(img.w / bands, img.h / lines);
+        radius = Math.min(12, Math.round(0.45 * shrink));
+    }
+    const dbRange = a.dbRange > 0.0 ? a.dbRange : depth;
+    const grid = toGrid(img, freqs, a.axis, lines, radius, tail, a.soften);
+    // The analyser's tilt, taken out again, then each band's drawn level
+    // evened out, so every band DRAWS at one level.
+    const gains = Float64Array.from(freqs, (f) => Math.pow(10.0, (-a.tilt * Math.log2(f / 1000.0)) / 20.0));
+    flatten(gains, freqs, sr, order, an, a.axis, aLo, aHi, peakDetect, avgSec, a.tilt, pps, depth);
+    const made = synthesise(grid, freqs, pps, sr, a.seed, dbRange, gains, Math.max(1, a.phaseTries));
+    const samples = made.samples;
+    let peak = 0.0;
+    for (let i = 0; i < samples.length; i++) { peak = Math.max(peak, Math.abs(samples[i])); }
+    if (!(peak > 0.0)) { fail("the sound is silent; the picture has no bright parts"); }
+    const scale = Math.pow(10.0, a.peakDb / 20.0) / peak;
+    for (let i = 0; i < samples.length; i++) { samples[i] *= scale; }
+    // True when this sound is made for the settings the Image preset writes,
+    // on the default range.
+    const imageView = a.axis === IMAGE_VIEW.axis && a.detect === IMAGE_VIEW.detect
+        && a.response === IMAGE_VIEW.response && a.tilt === IMAGE_VIEW.tilt
+        && !(a.fmin > 0.0) && !(a.fmax > 0.0);
+    // Where a full-bright band draws, and the level axis made for it.
+    const bandDb = 20.0 * Math.log10(scale);
+    const headDb = bandDb + VIEW_HEADROOM_DB;
+    const floorDb = bandDb - depth;
+    const held = simulate(samples, sr, order, an, a.axis, aLo, aHi, peakDetect, avgSec, a.tilt, floorDb, headDb);
+    let firstLit = -1;
+    let lastLit = -1;
+    const litAbove = 0.5 * (depth / (depth + VIEW_HEADROOM_DB));
+    for (let j = 0; j < held.rows; j++) {
+        let top = 0.0;
+        for (let b = 0; b < held.cols; b++) { top = Math.max(top, held.data[(j * held.cols) + b]); }
+        if (top > litAbove) {
+            if (firstLit < 0) { firstLit = j; }
+            lastLit = j;
+        }
+    }
+    const litSpan = firstLit < 0 ? 0 : (lastLit - firstLit) + 1;
+
+    let zoomLo = 0.0;
+    let zoomHi = 0.0;
+    if (a.axis === "linear") {
+        const edge = 0.04 * (fHi - fLo);
+        zoomLo = Math.max(aLo, fLo - edge);
+        zoomHi = Math.min(aHi, fHi + edge);
+    } else {
+        const edge = Math.pow(fHi / fLo, 0.04);
+        zoomLo = Math.max(aLo, fLo / edge);
+        zoomHi = Math.min(aHi, fHi * edge);
+    }
+    return {
+        samples: samples,
+        sr: sr,
+        channels: a.channels,
+        preview: previewStrip(grid, freqs, a.axis, aLo, aHi, an.bars),
+        check: held,
+        info: {
+            bars: an.bars, fftSize: 1 << order, binHz: binHz, analysisMs: an.analysisMs,
+            axis: a.axis, detect: a.detect, response: a.response, avgSec: avgSec, tilt: a.tilt,
+            frames: an.frames, intervalMs: an.intervalMs, stride: an.stride,
+            inverted: cleaned.inverted, shave: cleaned.shave, picW: img.w, picH: img.h,
+            soften: a.soften,
+            radius: radius, tail: tail, bands: bands, fFirst: freqs[0], fLast: freqs[bands - 1],
+            lowStep: freqs[1] - freqs[0],
+            topPerOctave: 1.0 / Math.log2(freqs[bands - 1] / freqs[bands - 2]),
+            rows: grid.rows, pps: pps, seconds: grid.rows / pps,
+            peakDb: a.peakDb, phases: made.label, crest: made.crest, bandDb: bandDb,
+            imageView: imageView,
+            floorDb: floorDb, headDb: headDb, depth: depth,
+            xLo: axisPos(fLo, a.axis, aLo, aHi), xHi: axisPos(fHi, a.axis, aLo, aHi),
+            zoomLo: zoomLo, zoomHi: zoomHi, litSpan: litSpan,
+        },
+    };
+}
+
+// ── the page ─────────────────────────────────────────────────────────────
+if (typeof document !== "undefined") {
+    const $ = (id) => document.getElementById(id);
+    const DEV_FIELDS = [
+        ["maxFrames", "Max frames"],
+        ["waterfallFrames", "Waterfall frames"],
+        ["waterfallIntervalSec", "Line interval (s)"],
+        ["barStride", "Bar stride"],
+        ["bars", "Bars"],
+        ["analysisIntervalMs", "Analysis tick (ms)"],
+        ["fftOrder", "FFT order"],
+        ["maxFftOrder", "Max FFT order"],
+        ["fMin", "Log f min (Hz)"],
+        ["subFMinHz", "Log Sub f min (Hz)"],
+        ["fMax", "f max (Hz)"],
+        ["decayLn", "Decay ln"],
+        ["speeds", "Response list (name=seconds)"],
+        ["tilts", "Tilt list (dB/oct)"],
+        ["smoothOct", "Smooth (octaves)"],
+    ];
+    let source = null;
+    let sourceName = "picture";
+    let wavUrl = null;
+
+    const setStatus = (text, bad) => {
+        $("status").textContent = text;
+        $("status").className = bad ? "bad" : "";
+    };
+
+    const readDev = () => {
+        const raw = {};
+        for (const [key] of DEV_FIELDS) { raw[key] = $("dev_" + key).value; }
+        return makeAnalyser(raw);
+    };
+
+    const fillLists = () => {
+        // RESPONSE and TILT offer exactly what the analyser numbers list.
+        let an = null;
+        try {
+            an = readDev();
+        } catch (err) {
+            setStatus(err.message, true);
+            return;
+        }
+        const refill = (select, items) => {
+            const was = select.value;
+            select.textContent = "";
+            for (const [value, text] of items) {
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = text;
+                select.appendChild(option);
+            }
+            if (items.some((item) => item[0] === was)) { select.value = was; }
+        };
+        refill($("response"), an.speeds.map(([name, sec]) =>
+            [name, `${name.charAt(0).toUpperCase()}${name.slice(1)} ${Math.round(sec * 1000.0)} ms`]));
+        refill($("tilt"), an.tilts.map((t) => [String(t), `${t.toFixed(1)} dB/oct`]));
+    };
+
+    for (const [key, label] of DEV_FIELDS) {
+        const wrap = document.createElement("label");
+        const isText = typeof ANALYSER[key] === "string";
+        if (isText) { wrap.className = "wide"; }
+        wrap.textContent = label;
+        const input = document.createElement("input");
+        input.id = "dev_" + key;
+        input.type = isText ? "text" : "number";
+        if (!isText) { input.step = "any"; }
+        input.value = String(ANALYSER[key]);
+        input.addEventListener("change", fillLists);
+        wrap.appendChild(input);
+        $("devGrid").appendChild(wrap);
+    }
+    fillLists();
+
+    const number = (id, name) => {
+        const v = Number($(id).value);
+        if ($(id).value.trim() === "" || !Number.isFinite(v)) { fail(`${name} is not a number`); }
+        return v;
+    };
+    const optional = (id, name, auto) => {
+        if ($(id).value.trim() === "") { return auto; }
+        return number(id, name);
+    };
+
+    const readArgs = () => ({
+        axis: $("axis").value,
+        detect: $("detect").value,
+        response: $("response").value,
+        tilt: Number($("tilt").value),
+        sampleRate: Math.round(number("sampleRate", "The sample rate")),
+        viewDepth: number("viewDepth", "The letter height"),
+        peakDb: Math.min(0.0, number("peakDb", "The peak level")),
+        channels: Number($("channels").value),
+        invert: $("invert").value,
+        fmin: optional("fmin", "The lowest band", 0.0),
+        fmax: optional("fmax", "The highest band", 0.0),
+        bands: Math.round(optional("bands", "The band count", 0)),
+        lines: Math.round(optional("lines", "The picture rows", 0)),
+        pps: optional("pps", "Rows per second", 0.0),
+        tailRows: Math.round(optional("tailRows", "The tail cut", -1)),
+        dbRange: optional("dbRange", "White to silent", 0.0),
+        threshold: number("threshold", "The black/white cut"),
+        shave: Math.round(optional("shave", "The edge shave", -1)),
+        dilate: Math.round(optional("dilate", "Thicken strokes", -1)),
+        soften: Math.max(0, Math.round(optional("soften", "The soft edge", SOFT_EDGE_BANDS))),
+        seed: Math.round(number("seed", "The phase seed")),
+        phaseTries: Math.round(number("phaseTries", "Phase tries")),
+        fftOrder: Math.round(optional("fftOrder", "The FFT order", 0)),
+    });
+
+    const paint = (canvas, strip) => {
+        // PREVIEW_ROW_PX pixel rows per line, top line first, with a faint
+        // line down the middle of the plot. The analyser's own blue.
+        canvas.width = strip.cols;
+        canvas.height = strip.rows * PREVIEW_ROW_PX;
+        const ctx = canvas.getContext("2d");
+        const image = ctx.createImageData(canvas.width, canvas.height);
+        const mid = strip.cols >> 1;
+        for (let r = 0; r < strip.rows; r++) {
+            for (let c = 0; c < strip.cols; c++) {
+                let v = strip.data[(r * strip.cols) + c];
+                if (c === mid) { v = Math.max(v, 0.25); }
+                const red = Math.round(5 + (v * 72));
+                const green = Math.round(6 + (v * 149));
+                const blue = Math.round(12 + (v * 212));
+                for (let p = 0; p < PREVIEW_ROW_PX; p++) {
+                    const o = ((((r * PREVIEW_ROW_PX) + p) * strip.cols) + c) * 4;
+                    image.data[o] = red;
+                    image.data[o + 1] = green;
+                    image.data[o + 2] = blue;
+                    image.data[o + 3] = 255;
+                }
+            }
+        }
+        ctx.putImageData(image, 0, 0);
+    };
+
+    const showReport = (i) => {
+        const axisNames = { logsub: "Log Sub", log: "Log", linear: "Linear" };
+        const rows = [
+            ["Analyser", `${i.bars} bars, FFT ${i.fftSize} (${i.binHz.toFixed(2)} Hz bins), a frame every ${i.analysisMs} ms`],
+            ["Waterfall", `${i.frames} lines, one every ${i.intervalMs} ms, bar stride ${i.stride}`],
+            ["Picture", `${i.inverted ? "flipped, " : ""}shaved ${i.shave} px, trimmed to ${i.picW} x ${i.picH}, thickened ${i.radius} px, every stroke cut ${i.tail} lines short for its tail, edges softened over ${i.soften} bands`],
+            ["Sound", `${i.bands} bands from ${i.fFirst.toFixed(0)} to ${i.fLast.toFixed(0)} Hz, ${i.lowStep.toFixed(1)} Hz apart at the bottom, ${i.topPerOctave.toFixed(1)} per octave at the top`],
+            ["Length", `${i.rows} rows at ${i.pps.toFixed(2)} per second, ${i.seconds.toFixed(2)} s`],
+            ["Level", `peak ${i.peakDb} dBFS, phases ${i.phases}, crest ${i.crest.toFixed(1)} dB, letter tops draw at ${i.bandDb.toFixed(1)} dB`],
+            ["On screen", `${(i.xLo * 100.0).toFixed(0)}% to ${(i.xHi * 100.0).toFixed(0)}% of the plot width; sound on ${i.litSpan} lines of ${i.frames}`],
+        ];
+        const list = $("report");
+        list.textContent = "";
+        for (const [name, text] of rows) {
+            const dt = document.createElement("dt");
+            dt.textContent = name;
+            const dd = document.createElement("dd");
+            dd.textContent = text;
+            list.append(dt, dd);
+        }
+        list.hidden = false;
+        $("reportEmpty").hidden = true;
+
+        // A frequency the way a person would say it: "700 Hz", "18 kHz".
+        const hzText = (hz) => {
+            if (hz < 1000.0) { return `${Math.round(hz / 10.0) * 10} Hz`; }
+            return `${Number((hz / 1000.0).toFixed(1))} kHz`;
+        };
+        const rateText = `${Number((Number($("sampleRate").value) / 1000.0).toFixed(1))} kHz`;
+        // RESPONSE as the plugin's own list shows it: "Fast 250 ms".
+        const responseText = `${i.response.charAt(0).toUpperCase()}${i.response.slice(1)} ${Math.round(i.avgSec * 1000.0)} ms`;
+        // The text between two stars is a value to set, and is drawn bold.
+        // The Image preset writes the settings, both windows and the camera,
+        // and turns the waterfall and Enlarge on. Default first puts the
+        // window at the size Image was tuned at. A sound made for other
+        // settings gets those steps by hand.
+        const view = i.imageView
+            ? [
+                "Click the preset name at the top right of the plot and choose *Default*. Click it again and choose *Image*.",
+                "Hide the controls with the *cog* at the top right.",
+            ]
+            : [
+                `Turn *Waterfall* on. Set Scale to *${axisNames[i.axis]}*, Detect to *${i.detect === "peak" ? "Peak" : "RMS"}*, Response to *${responseText}* and Tilt to *${i.tilt.toFixed(1)} dB/oct*.`,
+                `Zoom the frequency axis to about *${hzText(i.zoomLo)}* to *${hzText(i.zoomHi)}*.`,
+                `Set the level axis so its floor is near *${i.floorDb.toFixed(0)} dB* and its top is near *${i.headDb.toFixed(0)} dB*.`,
+            ];
+        const steps = [
+            `Put the WAV on a track in a *${rateText}* session, with Samatas Analyzer on that track.`,
+            ...view,
+            "Play the WAV from its start. Loop it, or click the *snowflake* (Freeze) to hold the picture still.",
+        ];
+        const ol = $("steps");
+        ol.textContent = "";
+        for (const text of steps) {
+            const li = document.createElement("li");
+            text.split("*").forEach((part, index) => {
+                if (part.length === 0) { return; }
+                if ((index % 2) === 1) {
+                    const strong = document.createElement("strong");
+                    strong.textContent = part;
+                    li.appendChild(strong);
+                } else {
+                    li.appendChild(document.createTextNode(part));
+                }
+            });
+            ol.appendChild(li);
+        }
+        ol.hidden = false;
+        $("stepsEmpty").hidden = true;
+    };
+
+    const generate = () => {
+        if (source === null) { return; }
+        $("go").disabled = true;
+        setStatus("Working...", false);
+        // Let the page draw "Working..." before the long job starts.
+        setTimeout(() => {
+            try {
+                const started = performance.now();
+                const result = run(source, readArgs(), readDev());
+                const blob = wavBlob(result.samples, result.sr, result.channels);
+                if (wavUrl !== null) { URL.revokeObjectURL(wavUrl); }
+                wavUrl = URL.createObjectURL(blob);
+                $("player").src = wavUrl;
+                $("soundInfo").textContent =
+                    `${sourceName}.wav, ${result.info.seconds.toFixed(2)} s, ${result.sr} Hz, 24-bit, ${(blob.size / 1048576).toFixed(1)} MB`;
+                $("soundBox").hidden = false;
+                $("soundEmpty").hidden = true;
+                paint($("check"), result.check);
+                paint($("preview"), result.preview);
+                showReport(result.info);
+                const took = ((performance.now() - started) / 1000.0).toFixed(1);
+                if (result.info.litSpan > result.info.frames) {
+                    setStatus("Made, but the picture is taller than the waterfall. Use fewer picture rows.", true);
+                } else {
+                    setStatus(`Made in ${took} s.`, false);
+                }
+            } catch (err) {
+                setStatus(err.message, true);
+            }
+            $("go").disabled = false;
+        }, 30);
+    };
+
+    const loadFile = (file) => {
+        if (!file) { return; }
+        const url = URL.createObjectURL(file);
+        const image = new Image();
+        image.onload = () => {
+            const big = Math.max(image.naturalWidth, image.naturalHeight);
+            if (big === 0) {
+                setStatus("That picture has no size. Try a JPG or PNG.", true);
+                return;
+            }
+            const shrink = Math.min(1.0, MAX_IMAGE_SIDE / big);
+            const w = Math.max(1, Math.round(image.naturalWidth * shrink));
+            const h = Math.max(1, Math.round(image.naturalHeight * shrink));
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d", { willReadFrequently: true });
+            ctx.drawImage(image, 0, 0, w, h);
+            source = greyFromPixels(ctx.getImageData(0, 0, w, h).data, w, h);
+            sourceName = file.name.replace(/\.[^.]*$/, "") || "picture";
+            $("thumb").src = url;
+            $("thumb").style.display = "block";
+            $("dropText").textContent = `${file.name}. Drop another to replace it.`;
+            generate();
+        };
+        image.onerror = () => {
+            URL.revokeObjectURL(url);
+            setStatus("That file could not be opened as a picture. Try a JPG or PNG.", true);
+        };
+        image.src = url;
+    };
+
+    const drop = $("drop");
+    drop.addEventListener("click", () => $("file").click());
+    drop.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); }
+    });
+    drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+    drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+    drop.addEventListener("drop", (e) => {
+        e.preventDefault();
+        drop.classList.remove("over");
+        loadFile(e.dataTransfer.files[0]);
+    });
+    $("file").addEventListener("change", () => loadFile($("file").files[0]));
+    $("go").addEventListener("click", generate);
+    $("sampleRate").addEventListener("change", generate);
+    $("download").addEventListener("click", () => {
+        if (wavUrl === null) { return; }
+        const link = document.createElement("a");
+        link.href = wavUrl;
+        link.download = sourceName + ".wav";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    });
+} else if (typeof module !== "undefined") {
+    module.exports = { ANALYSER, makeAnalyser, run, simulate, wavBlob };
+}
+</script>
+</body>
+</html>

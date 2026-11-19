@@ -62,3 +62,14 @@ code { font: 14px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 
 footer { border-top: 1px solid var(--line); padding-top: 16px; }
 footer p { font-size: 14px; }
+
+/* The manual page. */
+.manual h1 { font-size: 30px; }
+.manual h2 { font-size: 22px; color: var(--accent); margin: 40px 0 8px 0; }
+.manual h3 { font-size: 17px; font-weight: 700; margin: 24px 0 8px 0; }
+.manual h4 { font-size: 15px; font-weight: 700; margin: 16px 0 8px 0; }
+.manual hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+.manual img { display: block; max-width: 100%; height: auto; margin: 8px 0 16px 0; border-radius: 4px; }
+.manual ul, .manual ol { margin-bottom: 8px; }
+.manual code { background: var(--panel); padding: 1px 4px; border-radius: 3px; }
+.manual :target { scroll-margin-top: 16px; }
