@@ -73,3 +73,7 @@ footer p { font-size: 14px; }
 .manual ul, .manual ol { margin-bottom: 8px; }
 .manual code { background: var(--panel); padding: 1px 4px; border-radius: 3px; }
 .manual :target { scroll-margin-top: 16px; }
+
+/* Pictures on the plugin pages. */
+figure { margin: 8px 0 16px 0; }
+.pic { display: block; width: 100%; height: auto; border-radius: 4px; }
