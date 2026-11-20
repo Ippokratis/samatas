@@ -1,107 +1,477 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Samatas Analyzer - spectrum analyzer plugin for macOS and Windows</title>
-<meta name="description" content="Samatas Analyzer is a real-time spectrum analyzer plugin for macOS (AU and VST3) and Windows (VST3), with a 3D waterfall, a side-chain reference curve, peak and average hold, LUFS metering and exact readings under the pointer.">
-<link rel="canonical" href="https://ippokratis.github.io/samatas/samatas_analyzer.html">
-<meta property="og:title" content="Samatas Analyzer">
-<meta property="og:description" content="A real-time spectrum analyzer plugin for macOS and Windows, with a 3D waterfall, a reference curve and loudness metering.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://ippokratis.github.io/samatas/samatas_analyzer.html">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="page">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      Samatas Analyzer - spectrum analyzer plugin for macOS and Windows
+    </title>
+    <meta
+      name="description"
+      content="Samatas Analyzer is a real-time spectrum analyzer plugin for macOS (AU and VST3) and Windows (VST3), with a 3D waterfall, a side-chain reference curve, peak and average hold, LUFS metering and exact readings under the pointer."
+    />
+    <link
+      rel="canonical"
+      href="https://ippokratis.github.io/samatas/samatas_analyzer.html"
+    />
+    <meta property="og:title" content="Samatas Analyzer" />
+    <meta
+      property="og:description"
+      content="See every frequency in your mix. A real-time spectrum analyzer plugin for macOS and Windows, with a 3D waterfall, a reference curve and loudness metering."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://ippokratis.github.io/samatas/samatas_analyzer.html"
+    />
+    <meta
+      property="og:image"
+      content="https://ippokratis.github.io/samatas/img/og-analyzer.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Samatas Analyzer showing the spectrum of a full mix"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="landing">
+    <div class="page">
+      <header class="top">
+        <a class="brand" href="./">Samatas</a>
+        <nav aria-label="Pages">
+          <a href="samatas_analyzer.html">Analyzer</a>
+          <a href="samatas_analyzer_manual.html">Manual</a>
+          <a href="samatas_analyzer_image-to-sound.html">Image to Sound</a>
+        </nav>
+      </header>
 
-<header class="top">
-    <a class="brand" href="./">Samatas</a>
-    <nav aria-label="Pages">
-        <a href="samatas_analyzer.html">Analyzer</a>
-        <a href="samatas_analyzer_manual.html">Manual</a>
-        <a href="samatas_analyzer_image-to-sound.html">Image to Sound</a>
-    </nav>
-</header>
+      <main>
+        <section class="hero">
+          <p class="kicker">Samatas Analyzer</p>
+          <h1>See your mix.</h1>
+          <p class="lead">
+            A real-time spectrum analyzer plugin. See how loud each frequency
+            is, how it moves over time, and how your mix compares to a
+            reference.
+          </p>
+          <div class="actions">
+            <a class="btn btn-main" href="#buy"
+              >Coming soon: $10 launch price</a
+            >
+            <a class="btn btn-ghost" href="samatas_analyzer_manual.html"
+              >Read the manual</a
+            >
+          </div>
+          <p class="offer">Launch price $10 until 3 January 2027. Then $20.</p>
+          <p class="badges">
+            AU &middot; VST3 &middot; macOS on Apple silicon &middot; Windows 10
+            and 11
+          </p>
+          <figure class="wide">
+            <img
+              class="pic"
+              src="manual_1p0/1FullMix-4248387.avif"
+              alt="Samatas Analyzer showing the spectrum of a full mix"
+            />
+          </figure>
+        </section>
 
-<main>
-    <section>
-        <h1>Samatas Analyzer</h1>
-        <p>See how loud each frequency is, how it changes over time, and how your mix sits next to a reference. A real-time spectrum analyzer plugin for macOS and Windows.</p>
-        <figure>
-            <img class="pic" src="manual_1p0/1FullMix-4248387.avif" alt="Samatas Analyzer showing the spectrum of a full mix">
-        </figure>
-        <p>Every control and every reading is explained in the <a href="samatas_analyzer_manual.html">user manual</a>.</p>
-    </section>
+        <section>
+          <h2>What it does for you</h2>
+          <div class="cards">
+            <div class="card">
+              <h3>See it clearly</h3>
+              <p>
+                10 Hz to 20 kHz, as a spectrum, a 3D waterfall or a 68-band
+                psychoacoustic view.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Compare to a reference</h3>
+              <p>
+                Bring any track to the side chain. It shows as an
+                <span class="amber">orange curve</span> over your mix, so you
+                see where the two differ.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Measure exactly</h3>
+              <p>
+                Point at anything to read its frequency, note and cents. Check
+                loudness in LUFS and the gain you need to hit your target.
+              </p>
+            </div>
+          </div>
+        </section>
 
-    <section id="features">
-        <h2>What it does</h2>
-        <ul>
-            <li><strong>Spectrum.</strong> How loud each frequency is, from 10 Hz to 20 kHz, and up to half the sample rate when you zoom out. Log or Linear frequency scale. Mono, L / R or Mid / Side.</li>
-            <li><strong>Exact readings.</strong> Move the pointer over the display to read the frequency, the note and its cents. Freeze the picture, or turn on a hold line, and the readout also shows the exact level. Smoothing changes only the drawn line, never a number. A steady tone reads within 0.01 dB of its true level and within 6 cents of its pitch.</li>
-            <li><strong>Reference curve.</strong> Feed another track or a reference mix to the side chain. It is drawn as an orange curve over your own. <a href="samatas_analyzer_manual.html#comparing-your-mix-with-a-reference">Compare your mix with a reference</a>.</li>
-            <li><strong>Peak hold and Average hold.</strong> A heavy line at the highest level each frequency reached, or at its average level while your host plays. Turn on Average hold for your track and the reference to compare their balance of lows, mids and highs.</li>
-            <li><strong>Marker.</strong> Pin one frequency, then point at another to read the interval in semitones and cents, the harmonic number and the level difference. <a href="samatas_analyzer_manual.html#finding-the-pitch-of-a-kick">Find the pitch of a kick</a>.</li>
-            <li><strong>Loudness.</strong> Integrated loudness in LUFS (ITU-R BS.1770) or plain RMS, for your track and the reference. Set a target, and the Analyzer shows the gain that reaches it. <a href="samatas_analyzer_manual.html#reaching-a-loudness-target">Reach a loudness target</a>.</li>
-            <li><strong>Freeze.</strong> Hold the picture still, then step back through the last two seconds of sound with the frame slider.</li>
-            <li><strong>Classic Psychoacoustic view.</strong> 68 fixed bands that widen with frequency, in the style of the classic band analyzers used in mastering.</li>
-            <li><strong>High Resolution.</strong> Separates two bass notes a semitone apart from about 40 Hz up. <a href="samatas_analyzer_manual.html#11-high-resolution">How it works</a>.</li>
-            <li><strong>Controls.</strong> Response from 140 ms to 5000 ms, Smooth from Off to 1/3 octave, Tilt of 0, 3.0 or 4.5 dB per octave, and Detect on RMS or Peak.</li>
-            <li><strong>Presets and undo.</strong> Your own presets, a saved default, and undo and redo of up to 64 steps.</li>
-            <li><strong>Save Picture.</strong> Save the spectrum or the waterfall as a PNG image.</li>
-            <li><strong>Any size.</strong> Resize the window from its corner, and scale the interface from 100% to 300%.</li>
-            <li><strong>Help built in.</strong> Turn on Help, and every control explains itself when you rest the pointer on it.</li>
-            <li><strong>Sound untouched.</strong> The Analyzer never changes your audio. It only looks.</li>
-        </ul>
-    </section>
+        <section>
+          <h2>Why Samatas</h2>
+          <div class="facts">
+            <div class="fact">
+              <p class="big">0.01 dB</p>
+              <h3>Level accuracy</h3>
+              <p>A steady tone reads within 0.01 dB of its true level.</p>
+            </div>
+            <div class="fact">
+              <p class="big">6 cents</p>
+              <h3>Pitch accuracy</h3>
+              <p>
+                Every reading names the note, within 6 cents of its true pitch.
+              </p>
+            </div>
+            <div class="fact">
+              <p class="big">40 Hz</p>
+              <h3>Bass detail</h3>
+              <p>
+                High Resolution separates two notes a semitone apart, from about
+                40 Hz up.
+              </p>
+            </div>
+          </div>
+        </section>
 
-    <section>
-        <h2>Four views of one song</h2>
-        <p>The spectrum, the waterfall, the Classic Psychoacoustic view and High Resolution each show the same sound from another side.</p>
-        <figure>
-            <img class="pic" src="manual_1p0/pic2_fourViews.avif" alt="Four views of one song in Samatas Analyzer" loading="lazy" decoding="async">
-        </figure>
-    </section>
+        <section class="rows wide" id="features">
+          <div class="row">
+            <div class="row-text">
+              <p class="kicker">Waterfall</p>
+              <h2>Watch sound move in 3D</h2>
+              <p>
+                The waterfall shows the last two seconds as a 3D stack, newest
+                at the front. See a reverb tail decay, a filter sweep, a
+                resonance that builds.
+              </p>
+              <p>
+                Turn, tilt and zoom the mix in 3D. Drag the rulers to keep only
+                the frequencies and levels you care about.
+              </p>
+            </div>
+            <figure>
+              <img
+                class="pic"
+                src="manual_1p0/12Waterfall.avif"
+                alt="The waterfall view of Samatas Analyzer"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
 
-    <section>
-        <h2>Waterfall</h2>
-        <p>Shows the last two seconds of sound as a 3D stack, newest at the front. Use it to see how a sound changes over time: the decay of a reverb tail, a filter sweep, a resonance that builds.</p>
-        <p>Drag to turn and tilt the stack, and zoom and move it with the mouse or a trackpad. Drag the rulers to show only the frequencies and levels you care about. Enlarge lets the stack fill the whole display. <a href="samatas_analyzer_manual.html#following-one-frequency-over-time">Follow one frequency over time</a>.</p>
-        <figure>
-            <img class="pic" src="manual_1p0/12Waterfall.avif" alt="The waterfall view of Samatas Analyzer" loading="lazy" decoding="async">
-        </figure>
-    </section>
+          <div class="row">
+            <div class="row-text">
+              <p class="kicker">Reference</p>
+              <h2>Match your mix to the records you love</h2>
+              <p>
+                Feed a reference track into the side chain. Its
+                <span class="amber">orange curve</span> sits over yours, so a
+                missing low end or a harsh upper mid stands out at a glance.
+              </p>
+              <p>
+                Turn on Average hold for both, and compare their balance of
+                lows, mids and highs while the song plays.
+              </p>
+              <p>
+                <a
+                  href="samatas_analyzer_manual.html#comparing-your-mix-with-a-reference"
+                  >Compare your mix with a reference</a
+                >
+              </p>
+            </div>
+            <figure>
+              <img
+                class="pic"
+                src="manual_1p0/14LogicSidechain.avif"
+                alt="Sending a reference track to the side chain of Samatas Analyzer in Logic Pro"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
 
-    <section>
-        <h2>Image to Sound</h2>
-        <p>A small extra, just for fun. A web page turns a picture into a WAV file. Play the file through the Analyzer, and the waterfall draws your picture. The page runs in your browser and uploads nothing. <a href="samatas_analyzer_image-to-sound.html">Open Image to Sound</a>.</p>
-        <figure>
-            <img class="pic" src="manual_1p0/21Samatas.avif" alt="A picture drawn by sound in the waterfall" loading="lazy" decoding="async">
-        </figure>
-    </section>
+          <div class="row">
+            <div class="row-text">
+              <p class="kicker">Exact readings</p>
+              <h2>Numbers you can trust</h2>
+              <p>
+                Move the pointer over the display to read the frequency, the
+                note and its cents. Freeze the picture, or turn on a hold line,
+                and you also get the exact level.
+              </p>
+              <p>Smoothing changes only the drawn line, never a number.</p>
+            </div>
+            <figure>
+              <img
+                class="pic"
+                src="manual_1p0/9_1ReadoutBox.avif"
+                alt="The readout box showing frequency, note, cents and level"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
 
-    <section id="requirements">
-        <h2>Requirements</h2>
-        <ul>
-            <li><strong>macOS.</strong> macOS 26.0 or later, on a Mac with Apple silicon. AudioUnit (AU) and VST3.</li>
-            <li><strong>Windows.</strong> Windows 10 or 11, 64-bit. VST3.</li>
-            <li><strong>Host.</strong> Any host that loads AU or VST3 effect plugins, such as Logic Pro, Ableton Live or Reaper.</li>
-            <li><strong>Sample rates.</strong> Tested at 44.1, 48, 96 and 192 kHz.</li>
-        </ul>
-    </section>
+          <div class="row">
+            <div class="row-text">
+              <p class="kicker">Marker</p>
+              <h2>Find the note, not just the frequency</h2>
+              <p>
+                Pin one frequency, then point at another. Read the interval in
+                semitones and cents, the harmonic number and the level
+                difference. Tune an 808, find a resonance, check a harmonic.
+              </p>
+            </div>
+            <figure>
+              <img
+                class="pic"
+                src="manual_1p0/11_2Highres.avif"
+                alt="High Resolution mode separating close bass notes"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
 
-    <section id="install">
-        <h2>Install</h2>
-        <p><strong>macOS.</strong> The installer is not signed with an Apple Developer ID, so the first time you open it, macOS stops it. Allow it once in System Settings, under Privacy &amp; Security. The installer puts both plugins in <code>/Library/Audio/Plug-Ins</code>, for all users.</p>
-        <p><strong>Windows.</strong> Run the setup. If Windows warns that the publisher is unknown, click More info, then Run anyway. The setup puts the plugin in <code>C:\Program Files\Common Files\VST3</code>.</p>
-        <p>The manual shows <a href="samatas_analyzer_manual.html#3-compatibility-and-installation">every step, with pictures</a>, and how to remove the plugin.</p>
-    </section>
-</main>
+          <div class="row">
+            <div class="row-text">
+              <p class="kicker">Loudness</p>
+              <h2>Hit your loudness target</h2>
+              <p>
+                Integrated loudness in LUFS (ITU-R BS.1770) or plain RMS, for
+                your track and the reference. Set a target, and the Analyzer
+                shows the gain that reaches it.
+              </p>
+              <p>
+                <a
+                  href="samatas_analyzer_manual.html#reaching-a-loudness-target"
+                  >Reach a loudness target</a
+                >
+              </p>
+            </div>
+            <figure>
+              <img
+                class="pic"
+                src="manual_1p0/13Loudness.avif"
+                alt="The loudness readings of Samatas Analyzer"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
 
-<footer>
-    <p>&copy; 2026 Samatas. VST is a registered trademark of Steinberg Media Technologies GmbH. AudioUnit is a trademark of Apple Inc. All other trademarks are the property of their respective owners.</p>
-</footer>
+          <div class="row">
+            <div class="row-text">
+              <p class="kicker">Four views</p>
+              <h2>One song, four ways to see it</h2>
+              <p>
+                The spectrum, the waterfall, the Classic Psychoacoustic view and
+                High Resolution each show the same sound from another side.
+              </p>
+              <p>
+                Missed a moment? Freeze the picture and step back through the
+                last two seconds of sound.
+              </p>
+            </div>
+            <figure>
+              <img
+                class="pic"
+                src="manual_1p0/pic2_fourViews.avif"
+                alt="Four views of one song in Samatas Analyzer"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
+        </section>
 
-</div>
-</body>
+        <section>
+          <h2>And everything else you need</h2>
+          <ul class="chips">
+            <li>Log or Linear scale</li>
+            <li>Mono, L / R or Mid / Side</li>
+            <li>Peak hold and Average hold</li>
+            <li>Response 140 to 5000 ms</li>
+            <li>Smoothing up to 1/3 octave</li>
+            <li>Tilt 0, 3.0 or 4.5 dB per octave</li>
+            <li>RMS or Peak detection</li>
+            <li>Presets and a saved default</li>
+            <li>64 steps of undo and redo</li>
+            <li>Save as PNG</li>
+            <li>Resizable, 100% to 300%</li>
+            <li>Help on every control</li>
+          </ul>
+        </section>
+
+        <section class="rows wide">
+          <div class="row">
+            <div class="row-text">
+              <p class="kicker">A free extra</p>
+              <h2>Draw with sound</h2>
+              <p>
+                Turn any picture into a WAV file. Play it through the Analyzer,
+                and the waterfall draws your picture. The page runs in your
+                browser and uploads nothing.
+              </p>
+              <p>
+                <a
+                  class="btn btn-ghost"
+                  href="samatas_analyzer_image-to-sound.html"
+                  >Try Image to Sound</a
+                >
+              </p>
+            </div>
+            <figure>
+              <img
+                class="pic"
+                src="manual_1p0/21Samatas.avif"
+                alt="A picture drawn by sound in the waterfall"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
+        </section>
+
+        <section>
+          <h2>Made for</h2>
+          <div class="cards">
+            <div class="card">
+              <h3>Mixing</h3>
+              <p>Check your balance against a reference you trust.</p>
+            </div>
+            <div class="card">
+              <h3>Mastering</h3>
+              <p>Watch loudness and the classic band view side by side.</p>
+            </div>
+            <div class="card">
+              <h3>Producing</h3>
+              <p>Tune kicks and bass, and find the note of any peak.</p>
+            </div>
+            <div class="card">
+              <h3>Learning</h3>
+              <p>See what sound looks like, with help on every control.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="buy" id="buy">
+          <p class="kicker">Samatas Analyzer 1.0</p>
+          <p class="deal">Launch price</p>
+          <p class="price">$10</p>
+          <p class="offer">until 3 January 2027, then $20</p>
+          <ul class="license">
+            <li>For one person, on up to 2 Macs and 2 PCs.</li>
+            <li>Free updates for every 1.x version.</li>
+            <li>Use it in any project, personal or commercial.</li>
+          </ul>
+          <div class="actions">
+            <span class="btn btn-main is-soon" aria-disabled="true"
+              >Coming soon on Gumroad</span
+            >
+          </div>
+        </section>
+
+        <section id="requirements">
+          <h2>Requirements</h2>
+          <table class="specs">
+            <tr>
+              <th scope="row">macOS</th>
+              <td>
+                macOS 26.0 or later, on a Mac with Apple silicon. AudioUnit (AU)
+                and VST3.
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Windows</th>
+              <td>Windows 10 or 11, 64-bit. VST3.</td>
+            </tr>
+            <tr>
+              <th scope="row">Host</th>
+              <td>
+                Any host that loads AU or VST3 effect plugins, such as Logic
+                Pro, Ableton Live or Reaper.
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Sample rates</th>
+              <td>Tested at 44.1, 48, 96 and 192 kHz.</td>
+            </tr>
+          </table>
+        </section>
+
+        <section class="faq" id="install">
+          <h2>Questions</h2>
+          <details>
+            <summary>How many computers can I use it on?</summary>
+            <p>One license is for one person, on up to 2 Macs and 2 PCs.</p>
+          </details>
+          <details>
+            <summary>Are updates free?</summary>
+            <p>Yes. Every 1.x update is free for everyone who bought 1.0.</p>
+          </details>
+          <details>
+            <summary>macOS says the installer can't be opened.</summary>
+            <p>
+              The installer is not signed with an Apple Developer ID yet, so
+              macOS stops it the first time. Allow it once in System Settings,
+              under Privacy &amp; Security. The installer puts both plugins in
+              <code>/Library/Audio/Plug-Ins</code>, for all users.
+            </p>
+          </details>
+          <details>
+            <summary>Windows says the publisher is unknown.</summary>
+            <p>
+              Click More info, then Run anyway. The setup puts the plugin in
+              <code>C:\Program Files\Common Files\VST3</code>.
+            </p>
+          </details>
+          <details>
+            <summary>How do I get help?</summary>
+            <p>
+              Write to
+              <a href="mailto:ippobour@gmail.com">ippobour@gmail.com</a>. I
+              usually answer within a day or two.
+            </p>
+          </details>
+          <details>
+            <summary>Where can I learn every control?</summary>
+            <p>
+              The
+              <a href="samatas_analyzer_manual.html">user manual</a> explains
+              every control and reading, and shows
+              <a
+                href="samatas_analyzer_manual.html#3-compatibility-and-installation"
+                >each install step with pictures</a
+              >, and how to remove the plugin.
+            </p>
+          </details>
+        </section>
+
+        <section class="hero end">
+          <h2>Ready to see your mix?</h2>
+          <div class="actions">
+            <a class="btn btn-main" href="#buy"
+              >Coming soon: $10 launch price</a
+            >
+            <a class="btn btn-ghost" href="samatas_analyzer_manual.html"
+              >Read the manual</a
+            >
+          </div>
+        </section>
+
+        <section class="maker">
+          <p>Made by Ippokratis Bournellis.</p>
+        </section>
+      </main>
+
+      <footer>
+        <p>
+          &copy; 2026 Samatas. VST is a registered trademark of Steinberg Media
+          Technologies GmbH. AudioUnit is a trademark of Apple Inc. All other
+          trademarks are the property of their respective owners.
+        </p>
+      </footer>
+    </div>
+  </body>
 </html>
